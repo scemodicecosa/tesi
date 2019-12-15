@@ -1,0 +1,74 @@
+% !TeX encoding = UTF-8
+% !TeX program = pdflatex
+% !TeX spellcheck = en_US
+\documentclass[binding=0.6cm,LaM,oneside]{sapthesis} % LaM for a Laurea Magistrale
+\usepackage{microtype}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{booktabs}
+
+\usepackage{lineno}
+\modulolinenumbers[5]
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amssymb,amsmath,nccmath}
+\usepackage{cclicenses}
+\usepackage{makecell}
+\usepackage{lscape,array}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} 
+\usepackage[thin, , thinc]{esdiff}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{framed}  
+\usepackage[font=small,skip=0pt]{caption}
+\PassOptionsToPackage{hyphens}{url}
+\hypersetup{
+	colorlinks = true, % Colours links instead of ugly boxes
+	urlcolor = black, % Colour for external hyperlinks
+	linkcolor = black, % Colour of internal links
+	citecolor = black % Colour of citations
+}
+
+\hypersetup{pdftitle={Investigation of static features for improved APT malware identification},pdfauthor={Leonardo Sagratella}}
+\title{Investigation of static features for improved APT malware identification}
+\author{Leonardo Sagratella}
+\IDnumber{1645347}
+\course{CyberSecurity}
+\courseorganizer{Facoltà di Ingegneria dell'informazione, informatica e statistica}
+\AcademicYear{2019/2020}
+\copyyear{2020}
+\advisor{Prof. Riccardo Lazzeretti}
+\coadvisor{Dr. Giuseppe Laurenza}
+\authoremail{leonardosagratella@gmail.com}
+\begin{document}
+	\frontmatter
+	\maketitle
+	\dedication{Dedicato a\\ me stesso una stelle nascente e molto simpatica\\
+	 ma soprattutto alla mia stella e luce, FEDERICO DI MAIO, figlio di GIGGINO DI MAIO nostro premier nonchè padre fondatore del reddito di cittadinanza}
+	\begin{abstract}
+		Questa tesi parla di me.
+	\end{abstract}
+	\tableofcontents
+	\mainmatter
+	\chapter{Introduction}
+	\input{tools.tex}
+	\input{relatedworks.tex}
+	\input{creation.tex}
+	\input{classification.tex}
+	\input{discussion.tex}
+	\input{futureworks.tex}
+	
+	...
+	\backmatter
+	\cleardoublepage
+	\phantomsection % Give this command only if hyperref is loaded
+	\addcontentsline{toc}{chapter}{\bibname}
+	
+	\bibliographystyle{ieeetr}
+	\bibliography{reference}
+	
+	% Here put the code for the bibliography. You can use BibTeX or
+	% the BibLaTeX package or the simple environment thebibliography.
+\end{document}

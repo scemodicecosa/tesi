@@ -1,0 +1,25 @@
+\begin{thebibliography}{1}
+
+\bibitem{apt_def}
+ItGovernance, ``Advanced {Persistent} {Threats}.''
+  \url{https://www.itgovernance.co.uk/advanced-persistent-threats-apt}.
+
+\bibitem{fireeye_mtrends}
+FireEye, ``{FireEye} {M}-trends 2019.''
+  \url{https://content.fireeye.com/m-trends}.
+
+\bibitem{fireeye_anatomy}
+FireEye, ``Anatomy of {Advanced} {Persistent} {Threats}.''
+  \url{https://www.fireeye.com/current-threats/anatomy-of-a-cyber-attack.html}.
+
+\bibitem{ghidra}
+N.~S. Agency, ``Ghidra.'' \url{https://www.nsa.gov/resources/everyone/ghidra/}.
+
+\bibitem{scikit-learn}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
+  M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, J.~Vanderplas, A.~Passos,
+  D.~Cournapeau, M.~Brucher, M.~Perrot, and E.~Duchesnay, ``Scikit-learn:
+  Machine learning in {P}ython,'' {\em Journal of Machine Learning Research},
+  vol.~12, pp.~2825--2830, 2011.
+
+\end{thebibliography}
