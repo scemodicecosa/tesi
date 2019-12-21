@@ -70,7 +70,76 @@ To find $h$ the gradient descent algorithm starts from the perfect solution wher
 \section{SVC}
 Support Vector Machine
 \section{Cross-validation}
+
+Validation is a fundamental technique in machine learning because it allows us evaluating the stability of a model. It limits the problem of overfitting or underfitting, i.e. it makes sure that  the model has low bias and variance.
+
+Cross-validation is a model validation technique for assessing how the results of statistical analysis (model) will generalize to an independent data set.
+
+The main idea is to split the dataset $\mathcal{D}$ into a train set $\mathcal{T}$ and a test set $\mathcal{R}$ where the union of this subset is the entire dataset and their intersection is an empty set. \cite{ghojogh2019theory}
+
+ $\mathcal{T} \cup \mathcal{R} = \mathcal{D} $
+ 
+ $\mathcal{T} \cap \mathcal{R} = \emptyset $
+ 
+
+The model is trained on the training subset $\mathcal{T}$, and then it is evaluated on the validation subset $\mathcal{R}$ that contains unseen data.
+This process can be repeated many times, using different partitions of the dataset, and then we can calculate the average of the results.
+
+The goal of cross-validation is to test the effectiveness of the model in predicting new data, never seen in the training phase.\\
+
+We have different kind of cross-validation, leave-p-out cross-validation, k-fold cross-validation, holdout. We are going to analyze the k-fold, the one used in our tests.
+
+
+
+
+
 \subsection{KFold}
+
+\begin{algorithm}
+	\caption{K-Fold cross-validation}\label{alg:kfoldAlg}
+	\begin{algorithmic}[1]
+		 
+		
+		
+		\For{\textit{k from 1 to K}} 
+		\State {$\mathcal{R} \leftarrow$ Partition k from $\mathcal{D}$} 
+		\State {$ \mathcal{T} = \mathcal{D} \backslash \mathcal{R}$}
+		\State {Train the model with $\mathcal{T}$}
+		\State {$Err_k$ $\leftarrow$ Test the model on $\mathcal{R}$}
+		\EndFor
+		\State{ $Err \leftarrow \frac{1}{K} \sum_{k=1}^{K} Err_k$}
+		
+	\end{algorithmic}
+\end{algorithm}
+
+In K-Fold cross-validation the dataset $\mathcal{D}$ is randomly split in $K$ sets of approximately equals size, such that: \cite{ghojogh2019theory} \cite{kuhn2013applied}
+
+\[|\mathcal{D}_1| \approx |\mathcal{D}_2| \approx ... \approx |\mathcal{D}_k|
+\]
+\[
+\bigcup_{k=1}^{K} \mathcal{D}_{k} = \mathcal{D}
+\]
+\[
+ \mathcal{D}_i \cap \mathcal{D}_j = \emptyset, \space \forall i,j \in \{1, .., K \}, i \neq j
+\]
+
+For every $k$, the model is trained with all the samples, except for the one in $\mathcal{D}_k$, called first fold. After that the model is tested against the first fold set to estimate its performance. This process, described in Algorithm \ref{alg:kfoldAlg}, is repeated for each $\mathcal{D}_k$, at each stage the error of the predictions is calculated. The estimation of total error of the model is the average of the error in the single execution.\\
+
+There is no formal rule in the choice of $k$, usually it is 5 or 10. All you need to know is that as $k$ gets larger, the difference in size between the training set and the resampled set gets smaller; the bias, the difference between the expected and the predicted value, too decreases as $k$ gets larger.
+
+Another fundamental aspect in resampling is the variance or uncertainty. An unbiased method can guess correctly but with the drawback of high uncertainty. Repeating the resampling many times is possible in a big difference between performances. However, this difference decreases as the number of resampling increases.\\
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{kfold}
+	\caption{Example of 3-Fold cross-validation}
+	\label{fig:kfold}
+\end{figure}
+
+The example in Figure \ref{fig:kfold} from \cite{kuhn2013applied}
+represents a 3-Fold cross-validation execution with twelve samples. For each iteration the model is trained with a different partition of the dataset, and then the average of the three execution represents the performance of the model.
+
+\subsection{Stratified KFold}
 
 \section{Features Selection}
 \subsection{Filter method}
