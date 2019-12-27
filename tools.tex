@@ -56,7 +56,28 @@ So how does an APT work? Fireeye described their behavior in six steps. \cite{fi
 
 \section{Reverse Enigneering}
 
-\subsection{Disassembled code}
+Reverse engineering is the process of decomposing a human-made object to understand the underlying architecture, how it works, or to extract some information from it. This process can be applied in various fields, such as computer science, electronic, mechanical, or chemical \cite{eilam2011reversing}.
+
+We focus on reverse engineering applied to computer science. 
+\\
+
+The Institute of Electrical and Electronics Engineers (\textbf{IEEE}) states that reverse engineering is \textit{"The process of analyzing a subject system to identify the system's components and their interrelationships, and to create representations of the system in another form or at a higher level of abstraction."}, where the \textit{"subject system"} is referred to the software development \cite{chikofsky1990reverse}. 
+
+When somebody writes a software, he writes it with a language that is understandable by a human, for example, C or Java.  But the computer can not read it, so the programmer needs to compile the source code to let the computer understand what the software should do. 
+
+The compiling process is the process of translating the source code into a language understandable by a computer. But once the program is compiled, a human can no more read it, unless it has the corresponding source code. 
+
+If we want to understand a binary executable, but its source code is not available, we need to reverse it. There are different techniques of reversing for binary executable: disassembling the binary using a disassembler, decompiling the binary with a decompiler, or analyzing the information exchanged with a bus sniffer or a packet sniffer.
+
+
+\subsection{Disassembly code}
+
+Assembly language is a low-level programming language that has a substantial correspondence with the architecture's machine code. The program used to convert the assembly instruction to machine code instruction is called assembler. Since the assembly depends on the machine code, there is an assembly language, with its assembler, for each architecture.
+
+With a disassembler, it is possible to revert the actions made by the assembler, so it's possible to translate machine code instruction to assembly language. The output code is formatted for human readability.
+
+\subsection{Decompiler?}
+
 \subsection{Control Flow Graph}
 
 \subsection{Cyclomatic Complexity}
