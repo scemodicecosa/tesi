@@ -67,8 +67,8 @@ Gradient Boosting is a boosting algorithm that uses a \textit{gradient descent a
 Suppose we want to train a model $F$ to predict some values $y = F(x)$. At each step $m$ we have a weak model $F_m$. To improve the model $F_m$, the gradient descent algorithm creates a new model $F_{m+1}$ by adding to the previous model an estimator $h$ such that $F_{m+1}(x) = F_m(x) + h(x)$. \cite{gradientBoostLi}
 
 To find $h$ the gradient descent algorithm starts from the perfect solution where $F_{m+1}(x) = F_m(x) + h(x) = y$, i.e. $h(x) = y - F_m(x)$. Consequently gradient boosting will fit $h$ to the residual $y - F_m(x)$.
-\section{SVC}
-Support Vector Machine
+
+
 \section{Cross-validation}
 
 Validation is a fundamental technique in machine learning because it allows us evaluating the stability of a model. It limits the problem of overfitting or underfitting, i.e. it makes sure that  the model has low bias and variance.
@@ -131,17 +131,99 @@ Another fundamental aspect in resampling is the variance or uncertainty. An unbi
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=1.0\columnwidth]{kfold}
-	\caption{Example of 3-Fold cross-validation}
+	\includegraphics[width=1.0\columnwidth]{kfold2}
+	\caption{Example of 4-Fold cross-validation}
 	\label{fig:kfold}
 \end{figure}
 
-The example in Figure \ref{fig:kfold} from \cite{kuhn2013applied}
-represents a 3-Fold cross-validation execution with twelve samples. For each iteration the model is trained with a different partition of the dataset, and then the average of the three execution represents the performance of the model.
+The example in Figure \ref{fig:kfold} represents a 4-Fold cross-validation execution. For each iteration the model is trained with a different partition of the dataset, and then the average of the three execution represents the performance of the model.
 
-\subsection{Stratified KFold}
+\subsubsection{Stratified KFold}
+
+When the dataset's class are not equally balanced, it possible to have some folds without samples of a certain class. The stratification cross-validation ensures that each fold contains roughly the same proportions of classes of the entire dataset. Kohavi in \cite{kohavi1995study} states that normally stratification is better in terms of bias and variance, when compared to cross-validation.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{stratified}
+	\caption{Example of stratified 4-Fold cross-validation}
+	\label{fig:stratified}
+\end{figure}
+
+In Figure \ref{fig:stratified} is depicted an execution of stratified k-fold. As illustrated in the figure, a small portion of each class is taken as testing set at each fold.
+
+
+
+
 
 \section{Features Selection}
-\subsection{Filter method}
-\subsection{Wrapped method}
-\subsection{Embedded method}
+
+Features selection is a growing trend in machine learning problems. As technology advances, there is an increase in the quantity of data we can extract; this means bigger datasets to analyze and a decrease in performance and an increase in execution time. \\
+
+Features selection is the process of selecting a subset of features that are more relevant for the model and ignore the rest.
+The main goals of features selection are: \cite{guyon2003introduction}
+\begin{itemize}
+	\item Improve the performance of a classifier
+	\item Reduce the time and cost of analysis
+	\item Enhance data visualization and understanding
+\end{itemize}
+
+The idea behind feature selection is that if the dataset contains unnecessary or redundant features, those features can be removed without loss of information. \cite{bermingham2015application}
+
+However, there is a distinction between usefulness and relevance of a feature, a set of useful features can exclude some redundant features, that could be, instead, relevant to the problem.\cite{kohavi1997wrappers} \textbf{da riverere da kohavi}
+
+Features selection techniques can be grouped into three categories based on the approach used: \textbf{Filter methods}, \textbf{Wrapper methods}, \textbf{Embedded methods}.
+
+\subsection{Filter methods}
+Filter methods are applied directly to the dataset, so they are independent of the model used in the prediction. Compared to methods dependent on the model, such as wrapper or embedded methods, they have a better generalization of the problem, and they are faster. \cite{kohavi1997wrappers}
+
+However, they have less predictive performance.  They rely only on the characteristics of the features in the training set and can show the relationship between variables. \cite{sanchez2007filter}
+Usually, the filter methods rely on variable ranking. Ranking functions assign a score to each variable, and then the analyst can set a threshold of features to keep. 
+
+Hastie et al. \cite{hastie2009elements} state that filter methods may be preferable at first to other features selection techniques because they are computationally and statistically scalable.  Computationally efficient because we only need to apply a function to n features in the dataset and statistically because they introduce bias, but they could have substantially less variance.
+
+Scikit provides different functions for filter feature selection, such as Mutual information, chi-square, Pearson correlation, variance threshold. Those methods are explained in detail in the next chapter.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{filter}
+	\caption{Filter method flow}
+	\label{fig:filter}
+\end{figure}
+
+
+\subsection{Wrapper methods}
+
+Wrapper methods depend on the predictive model to choose a subset of features. The wrapper algorithm does not know the machine learning model used, and it is considered a black box \cite{kohavi1997wrappers}. 
+
+The algorithm relies on the model to evaluate the performance of each subset of features. Each subset trains a model, and the model error rate establishes the score of the given subset. This procedure is repeated until an optimal subset of features is found. 
+
+The main drawbacks of this method are that it is very computationally expensive, Amaldi et al. \cite{amaldi1998approximability} state that it is an NP-hard problem, and it can lead to overfitting if there are not enough data. Nevertheless, it usually gives the best result in predictive performance for the given model. \\
+
+Efficient search algorithms are crucial to reducing the computational cost and time, and they are not always a synonym of decreasing in predictive performance. Greedy search algorithms are optimal for wrapper methods, and they are divided into two main categories: \textit{forward selection} and \textit{backward elimination}. \cite{reunanen2003overfitting}.
+
+In \textit{forward selection}, the algorithm starts from an empty set, and at each iteration, it adds a new feature to the dataset. Instead, in \textit{backward elimination}, the algorithm starts from the whole dataset, and it removes a feature at each iteration, until it finds the best subset.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{wrapper}
+	\caption{Wrapper method flow}
+	\label{fig:wrapper}
+\end{figure}
+
+
+
+\subsection{Embedded methods}
+
+Embedded methods are a combination of the other two. They perform feature selection during the training process. \cite{guyon2003introduction} This technique allows the algorithms to be more efficient than wrapper methods. First of all, they do not need to split the dataset into training and testing sets. Secondly, they are faster because they do avoid to retrain the model for every subset of features.
+The most common methods are \textit{Lasso} and \textit{Ridge regression} and \textit{decision tree}.
+
+\textit{Lasso} and \textit{Ridge regression} penalize the beta coefficient by a factor, to avoid that the model focuses on a particular set of features.
+
+\textit{Decision tree }algorithms select a feature at each recursive step, during the tree growing process, dividing the sample into smaller subsets. The more child node a tree has of the same class, the more important are the features.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{embedded}
+	\caption{Embedded method flow}
+	\label{fig:embedded}
+\end{figure}
