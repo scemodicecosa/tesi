@@ -221,16 +221,6 @@ For the last block of features, we decided to study only the frequency of the di
 \end{table}
 
 \section{Control Flow Graph features}
-
-
-We rely on Ghidra's Pcode representation to build our dataset for Control Flow Graph. Ghidra contains three different scripts for analyzing the flow of the program, and we studied those scripts to understand how Ghidra manages the Pcode and their flow. The script iterates all the functions of the given sample and generates a .json file with the extracted data.\\
-
-Ghidra offers a DecompileInterface, a class that can decompile a function, and that returns an object DecompiledResult with all the information needed. It is also possible to pass different options to the DecompileInterface using the DecompileOption class. The resulting object contains an instance of HighFunction, a high-level abstraction associated with a low-level function made up of assembly instructions. The HighFunction object offers the possibility to iterate over the BasicBlocks of the corresponding function so we can analyze all the blocks and create our graph.\\
-
-The graph is composed of an array of basic blocks, each of which has an index, a list of pcodes, and two lists, one containing the indexes of the previous basic blocks and the other one the indexes where the basic block points, i.e., the flow of our function. The pcodes have a field with the associated pcode operation, a list of input varnodes, and a possible output varnode. \\
-
-The main problem encountered running the script, is the decompilation time. Some functions were intricate, and when it comes to decompile, Ghidra can take a very long time, even 25 minutes per sample.  Furthermore, the DecompileOption has a field indicating the maximum dimension of the payload of the decompiled function. The default value is 50MB, but for some specific functions, it is still low, and we needed to increase it to 500MB correctly decompile all the functions.  \\
-
 From the CFG files, we extracted 3 kinds of features:
 \begin{itemize}
 	\item {Control Flow Graph unigrams complete}
@@ -262,27 +252,7 @@ We counted the occurrences of each key and build our dataset.
 These two sets of features contain the unigrams and bigrams of the pcode only. We built the key using only the pcode operator, and then counted the occurrences. For the bigrams, we concatenated as before the key with the string =>.
 
 \subsection{Cyclomatic Complexity}
-Cyclomatic complexity is a software metric used to indicate the complexity of a program. Cyclomatic complexity is computed using the control flow graph of the program: the nodes of the graph correspond to indivisible groups of commands of a program, and a directed edge connects two nodes if the second command might be executed immediately after the first command. Cyclomatic complexity may also be applied to individual functions, modules, methods, or classes within a program. The cyclomatic complexity of a section of source code is the number of linearly independent paths within it. For instance, if the source code contained no control flow statements (conditionals or decision points), the complexity would be 1, since there would be only a single path through the code. If the code had one single-condition IF statement, there would be two paths through the code: one where the IF statement evaluates to TRUE and another one where it evaluates to FALSE so that the complexity would be 2. Two nested single-condition IFs, or one IF with two conditions, would produce a complexity of 3.
-Mathematically, the cyclomatic complexity of a structured program[a] is defined regarding the control flow graph of the program, a directed graph containing the basic blocks of the program, with an edge between two basic blocks if control may pass from the first to the second. The complexity M is then defined as[2]
-M = E - N + 2P,
-where
-E = the number of edges of the graph.
-N = the number of nodes of the graph.
-P = the number of connected components.
 
-The same function as above, represented using the alternative formulation, where each exit point is connected back to the entry point. This graph has 10 edges, 8 nodes, and 1 connected component, which also results in a cyclomatic complexity of 3 using the alternative formulation (10 - 8 + 1 = 3).
-An alternative formulation is to use a graph in which each exit point is connected back to the entry point. In this case, the graph is strongly connected, and the cyclomatic complexity of the program is equal to the cyclomatic number of its graph (also known as the first Betti number), which is defined as[2]
-M = E - N + P.
-This may be seen as calculating the number of linearly independent cycles that exist in the graph, i.e., those cycles that do not contain other cycles within themselves. Note that because each exit point loops back to the entry point, there is at least one such cycle for each exit point.
-For a single program (or subroutine or method), P is always equal to 1. So a simpler formula for a single subroutine is
-M = E - N + 2
-Cyclomatic complexity may, however, be applied to several such programs or subprograms at the same time (e.g., to all of the methods in a class), and in these cases, P will be equal to the number of programs in question, as each subprogram will appear as a disconnected subset of the graph.
-McCabe showed that the cyclomatic complexity of any structured program with only one entry point and one exit point is equal to the number of decision points (i.e., "if" statements or conditional loops) contained in that program plus one. However, this is true only for decision points counted at the lowest, machine-level instructions.[4] Decisions involving compound predicates like those found in high-level languages like IF cond1 AND cond2 THEN ... should be counted in terms of predicate variables involved, i.e., in this example, one should count two decision points, because at machine level it is equivalent to IF cond1 THEN IF cond2 THEN [2][5]
-Cyclomatic complexity may be extended to a program with multiple exit points; in this case, it is equal to
-pi - s + 2,
-where pi is the number of decision points in the program, and s is the number of exit points.\cite{complexity}  \textbf{Citato da wikipedia, da modificare tutto}\\
-
-Ghidra offers a class to compute the complexity of a function, CyclomaticCompelxity. This class has a method to calculate the cyclomatic complexity of a function by decomposing it into a flow graph using a BasicBlockModel. During the decompilation, we calculate the complexity of each function and stores it into the .json file. Then we calculate as a feature, the mean, the standard deviation, and the maximum value of complexity for each sample.
 
 \subsection{Standard Library}
 

@@ -1,60 +1,8 @@
 \chapter{Preliminaries}
-\section{Advanced Persistent Threat}
+\textbf{forse da ampliare disassembler e decompiler}\\
+This chapter talks about the information needed to understand the work we did and the choice we made. We firstly introduce the reverse engineering problem, with all its components. Then we present the state-of-the-art in reverse engineering tools, why we choose Ghidra, and its features. Lastly, we discuss scikit-learn and Jupyter notebook, both used in machine learning tasks.
 
-APT stands for Advanced Persistent Threat, a kind of sophisticated attack which requires an advanced level of expertise and aims to remain persistent on the attacked infrastructure.
-
-The term APT can refer to a persistent attack with a specific target, or it can refer to the group that organized the attack, sometimes the group is affiliated with some sovereign state.
-\\
-
-To understand better what is an APT, we need to decompose the word: 
-
-\textbf{Advanced:} the people behind the attack have an advanced level of expertise, resources, and money. They usually do not use known malware, but they write their malware specific to the target they want. Moreover, they can gather information on the target from the intelligence of their country of origin.
-
-\textbf{Persistent:}  The adversary does not aim to gain access in the most number of system, but rather to have persistent access to the infrastructure. The more time they remain undiscovered in the organization's network infrastructure, the higher are the chances of lateral movement, the greater are the information they can gather. Persistent access is the key to every APT.
-
-\textbf{Threat:} As said before, this is an organized threat, with a strategical vision of what to achieve. It is not an automatic tool that attacks everything trying to gather something. It is a meticulously planned attack that aims to obtain certain information from a given organization. \cite{apt_def}
-\\
-
-In general, APTs aim to higher-value targets like other nations or some big corporations. However, any individual can be a target. FireEye publish a report each year about the new APT campaign, the diagram below states which industry is the most attacked in the last year.\\
-
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=1.0\columnwidth]{graph}
-	\caption{Diagram of industry target}
-\end{figure}
-
-A point of particular concern is the retargeting, in the Americas, 63\% of the companies attacked by an APT, are attacked again last year by the same or similar group. In the Asian and Pacific areas, this is even worse, 78\% of the industries are hacked again. \cite{fireeye_mtrends} \\
-
-
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.5\columnwidth]{retarget}
-	\caption{Retargeting divided by regions}
-\end{figure}
-
-Advanced persistent threats, contrary to regular malware, are composed of different phases, each of which has an important role. 
-
-The attack is decomposed into smaller steps, for example, if a group of hackers wants to attack a CEO of a given company, they will not send directly to the CEO a phishing email, because it's likely that he has a complex system of security and they would be detected instantly. 
-
-Instead, the first step would hack a person in the same company with lower permissions that can have minor defense mechanisms. Once they got the first computer, they can explore the network infrastructure of the organization, and then decide which action is the best.
-They could cover their track from the log system, or locate the data they need or send a phishing email to the CEO from the owned user.\\
-
-So how does an APT work? Fireeye described their behavior in six steps. \cite{fireeye_anatomy}
-
-
-\begin{enumerate}
-	\item The adversary gains access into the network infrastructure, installing a malware sent through a phishing email or by exploiting some vulnerability.
-	\item Once they comprised the network, the malware scans all the infrastructure looking for other entry points or weaknesses. It can communicate with a Command \& Control server (C\&C) to receive new instructions or to send information.
-	\item The malware typically establishes additional points of compromise to ensure that the attack can continue even if a position is closed.
-	\item Once the attackers have a reliable connection to the network, they start dumping data such as usernames and passwords, to gain credentials.
-	
-	\item The malware sends the data to a server where the attackers can receive the information. Now the network is breached.
-	
-	\item The malware tries to cover its tracks cleaning the log system, but the network is still compromised so the adversary can enter again if they are not detected.
-	
-\end{enumerate}
-
-\section{Reverse Enigneering}
+\section{Reverse Engineering}
 
 Reverse engineering is the process of decomposing a human-made object to understand the underlying architecture, how it works, or to extract some information from it. This process can be applied in various fields, such as computer science, electronic, mechanical, or chemical \cite{eilam2011reversing}.
 
@@ -78,56 +26,203 @@ With a disassembler, it is possible to revert the actions made by the assembler,
 
 \subsection{Decompiler?}
 
+The decompiler is a program that takes as input a binary executable and produces as output a high-level representation of the source code of the program. It is the opposite of a compiler, which, given a source code, generates an executable. The output of the decompiler can be recompiled, and the executable will have the same behavior as the first one. 
+
+Unfortunately, the decompiler is not able to revert correctly the executable, and often it produces obfuscated code. The obfuscated code behaves in the same way, but it is harder for an analyst to understand it.
+
 \subsection{Control Flow Graph}
 
+The control flow graph is a representation, in graph format, of the execution flow of a program or application. Frances E. Allen developed it in \cite{allen1970control}.
+\\
+
+The Control Flow Graph is a directed graph, and it is process-oriented. Each node represents a basic block, a sequence of instructions that are executed consecutively without any jump. The edges of the graph represent the path of the execution. The graph represents all the possible paths that the program can take.
+
+There are two types of blocks:\textit{ entry blocks} and \textit{exit blocks}.
+The \textit{entry blocks} are the one where the flow starts; the \textit{exit blocks} the one where the flow ends. Figure \ref{fig:cfg} represents some examples of Control Flow Graph of different statements and loop. 
+
+The CFG is useful in code analysis, to determine if some portion of the code is inaccessible.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{cfg.png}
+	\caption{CFG of different statements and loops. \\
+	(a) if-then-else\\
+	(b) while loop\\
+	(c) natural loop with two exit points\\
+	(d) loop with two entry points	
+}
+	\label{fig:cfg}
+\end{figure}
+
 \subsection{Cyclomatic Complexity}
+Cyclomatic complexity is a software metric to determine the complexity of a single function, a module, a method, some classes, or the entire program.
+
+It is measured starting from a control flow graph of the program and indicates the number of linearly independent paths of it. 
+\\
+The formula to calculate the complexity is:
+
+\texttt{M =  E - N + 2P},\\
+where \texttt{E} indicates the number of \textit{edges}, \texttt{N} specifies the number of \textit{nodes}, and \texttt{P} indicates the number of \textit{connected components}.\\
+
+If the entry point and exit point are connected, we have a strongly connected graph, and the formula for complexity is slightly different: 
+
+\texttt{M = E - N + P}
+
+\begin{algorithm}
+	\caption{Example of function with different loops and statements}\label{alg:complexity}
+	\begin{algorithmic}[1]
+		
+		\setcounter{ALG@line}{0}
+		\While{not \texttt{EOF}}
+		\State{\texttt{Read} $record$}
+		\setcounter{ALG@line}{1}
+		\If{$field1 = 0$}
+		\State{$total \gets total + field1$}
+		\setcounter{ALG@line}{2}
+		\State{$counter \gets counter + 1$}
+		\Else{ }
+		\setcounter{ALG@line}{3}
+		\If{$field2 = 0$}
+		\State{\texttt{Print} $counter$, $total$}
+		\setcounter{ALG@line}{4}
+		\State{$counter \gets 0$}
+		\Else{}
+		\setcounter{ALG@line}{5}
+		\State{$total \gets total - field2$}
+		
+		\EndIf
+		\State{\textbf{end if}}
+		
+		\EndIf
+		\State{\textbf{end if}}
+		\setcounter{ALG@line}{7}
+		\State{\texttt{Print} \textit{End record}}
+		
+		
+		
+		\EndWhile
+		
+		\State{\texttt{Print} $counter$}
+		
+		
+		\setcounter{ALG@line}{0}
+		
+		
+	\end{algorithmic}
+\end{algorithm}
+
+Algorithm \ref{alg:complexity} shows an example of function with different loops and statements. In Figure \ref{fig:complexity_ex} there is the corresponding Control Flow Graph. The numbers before the lines represent the id of the basic block to which they belong, i.e. the graph's nodes.
+
+Being \textbf{node \#1} the entry node, and \textbf{node \#9} the exit code, we can calculate manually the number of independent path of the function:
+\begin{itemize}
+	\item 1, 9
+	\item 1, 2, 3, 8, 1, 9
+	\item 1, 2, 4, 5, 7, 8, 1, 9
+	\item 1, 2, 4, 6, 7, 8, 1, 9
+\end{itemize}
+
+	Using the formula presented above is possible to calculate the complexity of the function that is equal to 4. $M = 11 - 9 + 2 \times 1 = 4$, where 11 is the \textit{number of edges}, 9 the \textit{number of nodes}, and $2 \times 1$ the \textit{number of connected components}. The complexity calculated equals the number of independent path of the graph.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\columnwidth]{complexity.png}
+	\caption{Control flow graph of function \ref{alg:complexity}}
+	\label{fig:complexity_ex}
+\end{figure}
 
 
+\section{Reverse Engineering tools}
 
-\section{Ghidra}
-Ghidra is an open-source tool for Reverse Engineering developed and by the National Security Agency (NSA). It helps analyze malicious code and malware like viruses, and can give cybersecurity professionals a better understanding of potential vulnerabilities in their networks and systems \cite{ghidra}
+There are a lot of tools in the market that helps in reverse engineering. Some of them have tons of functionality, and others can do just a few things.\\
+
+The most important is \textbf{IDA}, a reverse engineering software developed by Hex-Rey that can achieve different things. It comes in a free version and a pro version. 
+
+It is compatible with most of the executable from different OSes, such as \texttt{PE}, \texttt{ELF}, \texttt{Mach-O}, or even raw binaries. It has extensive support and compatibility with almost every family processors.\\
+
+The free version contains all the features necessary for some basic reverse engineering; it has a disassembler and performs an automatic analysis of the sample, determining the API used, which parameters are passed to them, and other information. 
+
+The analyst can navigate the code and add some notation, rename functions, and variables, to better understand the behavior of the binary. However, most of the functionality works only with the PRO version, which costs 9000\$.
+
+The main features of IDA PRO are the debugger that lets the analyst debug the executables, the possibility of writing scripts to run against the sample, and a disassembler to revert the binary into some source code. \cite{ida}\\
+
+
+Another famous framework for RE is \textbf{radare2}. It is free and offers a decompiler and a disassembler.  It is compatible with tons of processors, and executable types. It comes with a set of command-line utilities that can be used individually or together, but it also has a graphic interface to navigate the code and the possibility of running scripts. However, it is not user-friendly as other tools \cite{radare2}.\\
+
 \begin{wrapfigure}{L}{0.35\textwidth}
 	\centering
 	\includegraphics[width=0.35\textwidth]{ghidra}
 	
 \end{wrapfigure}
 
+\textbf{Ghidra} is a novel open-source reverse engineering framework developed by the National Security Agency (NSA). It helps analyze malicious code and malware like viruses and can give cybersecurity professionals a better understanding of potential vulnerabilities in their networks and systems \cite{ghidra}. It is a direct competitor of IDA pro because it offers almost all the features that IDA has, but Ghidra is entirely free. It is possible to run a headless version of Ghidra, and control it by remote. We installed it on a virtual machine on a server and use it to run headless scripts on the executables to extract information about the binary.
+Ghidra does not have a large community and support because it was released last year, but it is a valid and complete tool for RE. 
+\\
 
-Usually, reverse engineering is the process of analyzing something to understand how it works. In the case of a program written in Java or C or C++, the code will be readable by a human but not bt a computer. It needs to be compiled in a language understandable by the network, but once it is compiled, we can no more read it. \\
+We choose to run our tests on \textbf{Ghidra} for different reasons. First of all, it is entirely free and open-source. 
 
-To understand how the program works, we need a toolkit to take it apart, and this is what Ghidra does. There are a lot of tools in the market that can do the same thing, in different ways, some of them are open-source and free, other you need to pay a license. 
+Secondly, it has an headless version of the framework. The possibility of a headless version was perfect for our needs because we can let it run on a server, always powered on, without bothering about resource consuming. 
 
-We choose to use Ghidra because it is free, and it offers the possibility of writing scripts to run against the binaries analyzed. In this way, we extracted all the necessary information automatically from the APT binaries.
+Moreover, we wanted to simplify as much as possible the extraction of features, and we do not want merging results from different tools, so we decided to use only one software. 
+
+Last but not least, the scripting part of Ghidra was perfect for running analysis and extracting information from the samples. 
+
+The only inconvenient is that, since it was released less than a year ago, the documentation, the support, and the community are not well developed, so at first was hard understanding how the software works.
+\section{Ghidra}
+
+This section will cover the Ghidra's features regarding the disassembled code, decompiler, control flow graph and complexity presented above.
+ 
+
+
+\subsection{Disassembled code}
+
+The extraction of disassembled code was an easy and fast task. The documentation provides all the information on how to correctly use the disassembler. 
+
+Ghidra does not have a functionality to extract all the disassembled code, like in the GUI. But it is possible, for each function, to iterate the instructions in a given address space range. The instruction object has a \texttt{toString()} method that returns the disassembled line, that will be used to create the features needed.
 
 \subsection{PCode}
-\textbf{la parte che segue è tutta da riscrivere in quanto CTRL+C CTRL+V diretto da Ghidra doc} \cite{ghidra_pcode}
-titolo da cambiare\\
+Pcode is a register transfer language developed by NSA for the reverse engineering framework Ghidra. The idea behind PCode is to create a language as general as possible, to let it adapt to as many different processors architecture. An intermediate language that can model the behavior of different processors is fundamental to develop a comprehensive reverse engineering framework.
 
-P-code is a register transfer language designed for reverse engineering applications. The language is general enough to model the behavior of many different processors. By modeling in this way, the analysis of different processors is put into a common framework, facilitating the development of retargetable analysis algorithms and applications.
+The idea behind pcode is that each processor instruction can be expressed as a sequence of pcode. Developers translated each instruction into a sequence of pcode operation as input and output variables (\textbf{varnodes}).
 
-Fundamentally, p-code works by translating individual processor instructions into a sequence of p-code operations that take parts of the processor state as input and output variables (varnodes). The set of unique p-code operations (distinguished by opcode) comprise a fairly tight set of the arithmetic and logical actions performed by general purpose processors. The direct translation of instructions into these operations is referred to as raw p-code. Raw p-code can be used to directly emulate instruction execution and generally follows the same control-flow, although it may add some of its own internal control-flow. The subset of opcodes that can occur in raw p-code is described in the section called “P-Code Operation Reference” and in the section called “Pseudo P-CODE Operations”, making up the bulk of this document.
+The entire set of single pcode instruction comprises a set of arithmetic and logic instructions that almost all processors perform. The direct translation of the instructions into those operations is called raw-pcode, which can be used to emulate a single processor instruction directly. NSA developed the pcodes to facilitate the construction and the analysis of a data flow graph of disassembled instructions.\\
 
-P-code is designed specifically to facilitate the construction of data-flow graphs for follow-on analysis of disassembled instructions. Varnodes and p-code operators can be thought of explicitly as nodes in these graphs. Generation of raw p-code is a necessary first step in graph construction, but additional steps are required, which introduces some new opcodes. Two of these, MULTIEQUAL and INDIRECT, are specific to the graph construction process, but other opcodes can be introduced during subsequent analysis and transformation of a graph and help hold recovered data-type relationships. All of the new opcodes are described in the section called “Additional P-CODE Operations”, none of which can occur in the original raw p-code translation. Finally, a few of the p-code operators, CALL, CALLIND, and RETURN, may have their input and output varnodes changed during analysis so that they no longer match their raw p-code form.
-\subsection{Address Space}
-The address space for p-code is a generalization of RAM. It is defined simply as an indexed sequence of bytes that can be read and written by the p-code operations. For a specific byte, the unique index that labels it is the byte's address. An address space has a name to identify it, a size that indicates the number of distinct indices into the space, and an endianess associated with it that indicates how integers and other multi-byte values are encoded into the space. A typical processor will have a ram space, to model memory accessible via its main data bus, and a register space for modeling the processor's general purpose registers. Any data that a processor manipulates must be in some address space. The specification for a processor is free to define as many address spaces as it needs. There is always a special address space, called a constant address space, which is used to encode any constant values needed for p-code operations. Systems generating p-code also generally use a dedicated temporary space, which can be viewed as a bottomless source of temporary registers. These are used to hold intermediate values when modeling instruction behavior.
+A p-code operation is the analog of a machine instruction.  All pcode operations have the same format; they have one or mode varnode as input, and optionally they can have an output. Only the output varnode can be modified. 
 
-P-code specifications allow the addressable unit of an address space to be bigger than just a byte. Each address space has a wordsize attribute that can be set to indicate the number of bytes in a unit. A wordsize which is bigger than one makes little difference to the representation of p-code. All the offsets into an address space are still represented internally as a byte offset. The only exceptions are the LOAD and STORE p-code operations. These operations read a pointer offset that must be scaled properly to get the right byte offset when dereferencing the pointer. The wordsize attribute has no effect on any of the other p-code operations. 
+\subsubsection{Address Space}
 
-\subsection{Varnode}
-A varnode is a generalization of either a register or a memory location. It is represented by the formal triple: an address space, an offset into the space, and a size. Intuitively, a varnode is a contiguous sequence of bytes in some address space that can be treated as a single value. All manipulation of data by p-code operations occurs on varnodes.
+The address space for p-code is a generalization of RAM. It represents an indexed sequence of bytes in memory that pcode can read and write into it. The address space has an identifying name, a size indicating the number of distinct indexes of memory, and an endianness that specify the encoding used to store integers and multi-byte values into the space address.
 
-Varnodes by themselves are just a contiguous chunk of bytes, identified by their address and size, and they have no type. The p-code operations however can force one of three type interpretations on the varnodes: integer, boolean, and floating-point.
+A regular processor has a ram space to model memory accessible via its data bus, a register space to model the processor's registers, and usually a constant space to store all the constants used by pcodes. All the data that pcodes handle must be stored into an address space. 
+Pcode generally uses a temporary address space to store intermediate values when modeling the processor's instructions. 
+The implementation of a processor can have as many address spaces as it is needed.
 
-Operations that manipulate integers always interpret a varnode as a twos-complement encoding using the endianess associated with the address space containing the varnode.
-A varnode being used as a boolean value is assumed to be a single byte that can only take the value 0, for false, and 1, for true.
-Floating-point operations use the encoding expected by the processor being modeled, which varies depending on the size of the varnode. For most processors, these encodings are described by the IEEE 754 standard, but other encodings are possible in principle.
 
-If a varnode is specified as an offset into the constant address space, that offset is interpreted as a constant, or immediate value, in any p-code operation that uses that varnode. The size of the varnode, in this case, can be treated as the size or precision available for the encoding of the constant. As with other varnodes, constants only have a type forced on them by the p-code operations that use them. 
+\subsubsection{Varnode}
+A varnode is a generalization of a register or memory location and has the functionality of handle the data manipulated by pcodes. It is composed of an address space, an offset into the address space, and a size. 
+A varnode is a sequence of contiguous bytes that can be treated as a single value. The address and the size identify the varnode. Even if they have no type, some pcode operations can cast them into three types: integer, boolean, or floating-point. 
 
-\subsection{Pcode Operations}
-A p-code operation is the analog of a machine instruction. All p-code operations have the same basic format internally. They all take one or more varnodes as input and optionally produce a single output varnode. The action of the operation is determined by its opcode. For almost all p-code operations, only the output varnode can have its value modified; there are no indirect effects of the operation. The only possible exceptions are pseudo operations, see the section called “Pseudo P-CODE Operations”, which are sometimes necessary when there is incomplete knowledge of an instruction's behavior.
+In the case of integer values, the pcode operation represents the varnode using the endianness linked with the address space.
+In the case of floating-point, the operation uses the encoding of the varnodes that depends on its size.
+In the case of boolean values, the varnode has a single byte that can be 0 for false, 1 for true.
 
-All p-code operations are associated with the address of the original processor instruction they were translated from. For a single instruction, a 1-up counter, starting at zero, is used to enumerate the multiple p-code operations involved in its translation. The address and counter as a pair are referred to as the p-code op's unique sequence number. Control-flow of p-code operations generally follows sequence number order. When execution of all p-code for one instruction is completed, if the instruction has fall-through semantics, p-code control-flow picks up with the first p-code operation in sequence corresponding to the instruction at the fall-through address. Similarly, if a p-code operation results in a control-flow branch, the first p-code operation in sequence executes at the destination address.
+If the varnode's address space is in the constant space, the varnode is a constant or an immediate value. In this case the size of the varnode is the size or the precision available for the encoding of the constant.
+
+
+
+\subsection{Control Flow Graph}
+
+We rely on Ghidra's Pcode representation to build our dataset for \textit{Control Flow Graph}. Ghidra contains three different scripts for analyzing the flow of the program, and we studied those scripts to understand how Ghidra manages the Pcode and their flow. The script iterates all the functions of the given sample and generates a .json file with the extracted data.\\
+
+Ghidra offers a \texttt{DecompileInterface}, a class that can decompile a function, and that returns an object \texttt{DecompiledResult} with all the information needed. It is also possible to pass different options to the \texttt{DecompileInterface} using the \texttt{DecompileOption} class. The resulting object contains an instance of \texttt{HighFunction}, a high-level abstraction associated with a low-level function made up of assembly instructions. The \texttt{HighFunction} object offers the possibility to iterate over the BasicBlocks of the corresponding function so we can analyze all the blocks and create our graph.\\
+
+The graph is composed of an array of basic blocks, each of which has an index, a list of pcodes, and two lists, one containing the indexes of the previous basic blocks and the other one the indexes where the basic block points, i.e., the flow of our function. The pcodes have a field with the associated pcode operation, a list of input varnodes, and a possible output varnode. \\
+
+The main problem encountered running the script, is the decompilation time. Some functions were intricate, and when it comes to decompile, Ghidra can take a very long time, even 25 minutes per sample.  Furthermore, the \texttt{DecompileOption} has a field indicating the maximum dimension of the payload of the decompiled function. The default value is 50MB, but for some specific functions, it is still low, and we needed to increase it to 500MB correctly decompile all the functions.
+
+\subsection{Cyclomatic Complexity}
+
+
+Ghidra offers a class to compute the complexity of a function, \texttt{CyclomaticCompelxity}. This class has a method to calculate the cyclomatic complexity of a function by decomposing it into a flow graph using a \texttt{BasicBlockModel}. During the decompilation, we calculate the complexity of each function and stores it into the .json file.
 
 
 \section{Scikit-learn}
@@ -135,6 +230,12 @@ Scikit-learn is a Python module integrating a wide range of state-of-the-art mac
 
 It is open-source, commercially usable, and contains many modern machine learning algorithms for classification, regression, clustering, feature extraction, and optimization.
 For this reason, Scikit-Learn is often the first tool in a Data Scientists toolkit for machine learning of incoming data sets. \cite{scikit-learn}
+
+We choose Scikit as a machine learning library because it is the most used in literature, and it has a great community and support. Moreover, it offers all the models and methods required by our work. 
 \section{Jupyter Notebook}
 
+"The Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations and narrative text. Uses include: data cleaning and transformation, numerical simulation, statistical modeling, data visualization, machine learning, and much more" \cite{jupyter}.\\
 
+We choose Jupyter because it excellently fits our need for remote running. In the same server, where we installed Ghidra, we installed Jupyter, and we enabled it to run remotely, with the proper precautions! This setup allows us to work remotely without any problem. 
+
+Machine learning tasks are often time and computationally expensive, so running them on a personal computer would be slower due to limited computer resources, and it would keep busy the workstation.
