@@ -14,7 +14,7 @@ The following sections will cover the blocks of features extracted, explaining t
 
 \section{Dataset file format}
 The choice of the format used for storing our dataset was crucial.
-We decided to save a single file for each sample into a \texttt{.csv } file. We calculated the md5 of each sample and we used it to find the related APT campaign in the dAPTaset. Each \texttt{.csv} file contains a column named md5, a column name apt, and \texttt{n} columns corresponding to the features vector of the sample. During the classification phase the md5s are stripped out from the dataset and the apt column is the label of each sample.
+We decided to save the feature vector of each sample into a \texttt{.csv } file. We calculated the md5 of each sample and we used it to find the related APT campaign in the dAPTaset. Each \texttt{.csv} file contains a column named md5, a column name apt, and \texttt{n} columns corresponding to the features vector of the sample. During the classification phase the md5s are stripped out from the dataset and the apt column is the label of each sample.
 
 To generate the dataset with all the features vectors of all the samples, we tried different approaches. 
 
