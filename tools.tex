@@ -210,12 +210,13 @@ If the varnode's address space is in the constant space, the varnode is a consta
 
 
 \subsection{Control Flow Graph}
+\label{subsec:cfg_ghidra}
+We rely on Ghidra's Pcode representation to build our dataset for \textit{Control Flow Graph}. Ghidra contains three different scripts for analyzing the flow of the program, and we studied those scripts to understand how Ghidra manages the Pcode and their flow. The script iterates all the functions of the given sample and generates a .json file with the extracted data.
 
-We rely on Ghidra's Pcode representation to build our dataset for \textit{Control Flow Graph}. Ghidra contains three different scripts for analyzing the flow of the program, and we studied those scripts to understand how Ghidra manages the Pcode and their flow. The script iterates all the functions of the given sample and generates a .json file with the extracted data.\\
+Ghidra offers a \texttt{DecompileInterface}, a class that can decompile a function, and that returns an object \texttt{DecompiledResult} with all the information needed. It is also possible to pass different options to the \texttt{DecompileInterface} using the \texttt{DecompileOption} class. The resulting object contains an instance of \texttt{HighFunction}, a high-level abstraction associated with a low-level function made up of assembly instructions. The \texttt{HighFunction} object offers the possibility to iterate over the BasicBlocks of the corresponding function so we can analyze all the blocks and create our graph.
 
-Ghidra offers a \texttt{DecompileInterface}, a class that can decompile a function, and that returns an object \texttt{DecompiledResult} with all the information needed. It is also possible to pass different options to the \texttt{DecompileInterface} using the \texttt{DecompileOption} class. The resulting object contains an instance of \texttt{HighFunction}, a high-level abstraction associated with a low-level function made up of assembly instructions. The \texttt{HighFunction} object offers the possibility to iterate over the BasicBlocks of the corresponding function so we can analyze all the blocks and create our graph.\\
-
-The graph is composed of an array of basic blocks, each of which has an index, a list of pcodes, and two lists, one containing the indexes of the previous basic blocks and the other one the indexes where the basic block points, i.e., the flow of our function. The pcodes have a field with the associated pcode operation, a list of input varnodes, and a possible output varnode. \\
+We saved the information gathered into a \texttt{.json} file with the following structure:
+The \texttt{.json} is composed of an array of basic blocks, each of which has an index, a list of pcodes, and two lists, one containing the indexes of the previous basic blocks and the other one the indexes where the basic block points, i.e., the flow of our function. The pcodes have a field with the associated pcode operation, a list of input varnodes, and a possible output varnode.
 
 The main problem encountered running the script, is the decompilation time. Some functions were intricate, and when it comes to decompile, Ghidra can take a very long time, even 25 minutes per sample.  Furthermore, the \texttt{DecompileOption} has a field indicating the maximum dimension of the payload of the decompiled function. The default value is 50MB, but for some specific functions, it is still low, and we needed to increase it to 500MB correctly decompile all the functions.
 
@@ -234,7 +235,7 @@ For this reason, Scikit-Learn is often the first tool in a Data Scientists toolk
 We choose Scikit as a machine learning library because it is the most used in literature, and it has a great community and support. Moreover, it offers all the models and methods required by our work. 
 \section{Jupyter Notebook}
 
-"The Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations and narrative text. Uses include: data cleaning and transformation, numerical simulation, statistical modeling, data visualization, machine learning, and much more" \cite{jupyter}.\\
+"The Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations and narrative text. Uses include: data cleaning and transformation, numerical simulation, statistical modeling, data visualization, machine learning, and much more" \cite{jupyter}.
 
 We choose Jupyter because it excellently fits our need for remote running. In the same server, where we installed Ghidra, we installed Jupyter, and we enabled it to run remotely, with the proper precautions! This setup allows us to work remotely without any problem. 
 

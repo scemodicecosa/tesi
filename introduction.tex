@@ -1,0 +1,56 @@
+\chapter{Introduction}
+
+\section{Advanced Persistent Threat}
+
+The National Institute of Standards and Technology (\textbf{NIST}) defines the Advanced Persistent Threat as \textit{"An adversary that possesses sophisticated levels of expertise and significant resources which allow it to create opportunities to achieve its objectives by using multiple attack vectors (e.g., cyber, physical, and deception). These objectives typically include establishing and extending footholds within the information technology infrastructure of the targeted organizations for purposes of exfiltrating information, undermining or impeding critical aspects of a mission, program, or organization; or positioning itself to carry out these objectives in the future."}
+
+So the term APT refers to an advanced adversary that aims to attack some critical infrastructure, a government, or an organization. 
+\\
+
+To understand better what is an APT, we need to decompose the word: 
+
+\textbf{Advanced:} the people behind the attack have an advanced level of expertise, resources, and money. They usually do not use known malware, but they write their malware specific to the target they want. Moreover, they can gather information on the target from the intelligence of their country of origin.
+
+\textbf{Persistent:}  The adversary does not aim to gain access in the most number of system, but rather to have persistent access to the infrastructure. The more time they remain undiscovered in the organization's network infrastructure, the higher are the chances of lateral movement, the greater are the information they can gather. Persistent access is the key to every APT.
+
+\textbf{Threat:} As said before, this is an organized threat, with a strategical vision of what to achieve. It is not an automatic tool that attacks everything trying to gather something. It is a meticulously planned attack that aims to obtain certain information from a given organization. \cite{apt_def}
+\\
+
+In general, APTs aim to higher-value targets like other nations or some big corporations. However, any individual can be a target. FireEye publish a report each year about the new APT campaign, the diagram below states which industry is the most attacked in the last year.\\
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{graph}
+	\caption{Diagram of industry target}
+\end{figure}
+
+A point of particular concern is the retargeting, in the Americas, 63\% of the companies attacked by an APT, are attacked again last year by the same or similar group. In the Asian and Pacific areas, this is even worse, 78\% of the industries are hacked again. \cite{fireeye_mtrends} \\
+
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.5\columnwidth]{retarget}
+	\caption{Retargeting divided by regions}
+\end{figure}
+
+Advanced persistent threats, contrary to regular malware, are composed of different phases, each of which has an important role. 
+
+The attack is decomposed into smaller steps, for example, if a group of hackers wants to attack a CEO of a given company, they will not send directly to the CEO a phishing email, because it's likely that he has a complex system of security and they would be detected instantly. 
+
+Instead, the first step would hack a person in the same company with lower permissions that can have minor defense mechanisms, or hack some organization that works with the one we want to attack. Once they got the first computer, they can explore the network infrastructure of the organization, and then decide which action is the best.
+They could cover their track from the log system, or locate the data they need or send a phishing email to the CEO from the owned user.\\
+
+So how does an APT work? Fireeye described their behavior in six steps. \cite{fireeye_anatomy}
+
+
+\begin{enumerate}
+	\item The adversary gains access into the network infrastructure, installing a malware sent through a phishing email or by exploiting some vulnerability.
+	\item Once they comprised the network, the malware scans all the infrastructure looking for other entry points or weaknesses. It can communicate with a Command \& Control server (C\&C) to receive new instructions or to send information.
+	\item The malware typically establishes additional points of compromise to ensure that the attack can continue even if a position is closed.
+	\item Once the attackers have a reliable connection to the network, they start dumping data such as usernames and passwords, to gain credentials.
+	
+	\item The malware sends the data to a server where the attackers can receive the information. Now the network is breached.
+	
+	\item The malware tries to cover its tracks cleaning the log system, but the network is still compromised so the adversary can enter again if they are not detected.
+	
+\end{enumerate}
