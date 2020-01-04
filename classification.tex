@@ -70,6 +70,7 @@ To find $h$ the gradient descent algorithm starts from the perfect solution wher
 
 
 \section{Cross-validation}
+\label{sec:cv}
 
 Validation is a fundamental technique in machine learning because it allows us evaluating the stability of a model. It limits the problem of overfitting or underfitting, i.e. it makes sure that  the model has low bias and variance.
 
@@ -156,7 +157,7 @@ In Figure \ref{fig:stratified} is depicted an execution of stratified k-fold. As
 
 
 \section{Features Selection}
-
+\label{sec:feat_sel}
 Features selection is a growing trend in machine learning problems. As technology advances, there is an increase in the quantity of data we can extract; this means bigger datasets to analyze and a decrease in performance and an increase in execution time. \\
 
 Features selection is the process of selecting a subset of features that are more relevant for the model and ignore the rest.
@@ -181,7 +182,7 @@ Usually, the filter methods rely on variable ranking. Ranking functions assign a
 
 Hastie et al. \cite{hastie2009elements} state that filter methods may be preferable at first to other features selection techniques because they are computationally and statistically scalable.  Computationally efficient because we only need to apply a function to n features in the dataset and statistically because they introduce bias, but they could have substantially less variance.
 
-Scikit provides different functions for filter feature selection, such as Mutual information, chi-square, Pearson correlation, variance threshold. Those methods are explained in detail in the next chapter.
+Scikit provides different functions for filter feature selection, such as Mutual information, chi-square, f-classification, variance threshold. Those methods are explained in detail in the next chapter.
 
 \begin{figure}[!h]
 	\centering
