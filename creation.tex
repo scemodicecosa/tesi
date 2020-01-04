@@ -6,30 +6,26 @@ Since we want to boost up the work made by Laurenza et al., we choose to continu
 
 At first, we tried to replicate the work done by Caliskan et al., but we found that most of the tools used depend on software no more maintained. Some of those tools do not work as expected, and others were slow in processing files. To simplify as much as possible the process of analyzing executables, we decided to use only Ghidra as software for extracting features.
 
-Ghidra comes with a headless analyzer, which analyzes and runs scripts on the given sample. The headless version can run in any server, even without a desktop environment. So we built up a virtual machine in the Sapienza network and installed Ghidra there.  Unfortunately, Ghidra's documentation is not exhaustive since it was released less than a year ago. The hardest part was understanding Ghidra's APIs and how to exploit them for our purpose. The already made scripts were useful for our task because they contain many approaches for extracting data. \\
-
-
-
-The following sections will cover the blocks of features extracted, explaining the procedure used to accomplish this task.
+The following sections cover the blocks of features extracted, explaining the procedure used to accomplish this task.
 
 \section{Dataset file format}
 The choice of the format used for storing our dataset was crucial.
-We decided to save the feature vector of each sample into a \texttt{.csv } file. We calculated the md5 of each sample and we used it to find the related APT campaign in the dAPTaset. Each \texttt{.csv} file contains a column named md5, a column name apt, and \texttt{n} columns corresponding to the features vector of the sample. During the classification phase the md5s are stripped out from the dataset and the apt column is the label of each sample.
+We decided to save the feature vector of each sample into a \texttt{.csv } file. Using the md5 we found the related APT campaign in the dAPTaset. Each \texttt{.csv} file contains a column named md5, a column name apt, and \texttt{n} columns corresponding to the features vector of the sample. During the classification phase the md5s are stripped out from the dataset and the apt column is the label of each sample.
 
-To generate the dataset with all the features vectors of all the samples, we tried different approaches. 
+To generate the dataset with the feature vectors of all the samples, we tried different approaches. 
 
 The first one was to merge all the \texttt{.csv} files into a single big \texttt{.csv}. Unfortunately, the more features we extracted, the more significant was the dimensionality of our dataset.  When it comes to reading into python, pandas was very slow in both reading and processing the files.
 
-A valid alternative to pandas is \textit{Dask}, a flexible parallel computing library for analytics, that integrates with \textit{pandas},  \textit{numpy}, and \textit{scikit}. However, the dask-ml package lacks some functionalities for the cross-validation and random forest model. Furthermore, It was still slow in reading bigger files, so we decided to find another solution to speed up the process.
+A valid alternative to pandas is \textit{Dask} \cite{dask}, a flexible parallel computing library for analytics, that integrates with \textit{pandas},  \textit{numpy}, and \textit{scikit}. However, the dask-ml package lacks some functionalities for the cross-validation and random forest model. Furthermore, It was still slow in reading bigger files, so we decided to find another solution to speed up the process.
 
-In the end, we decided to store our dataset into a \textit{Hierarchical Data Format} (\textbf{HDF5}) designed to store and organize large amounts of data. This format comes with a cost, the files are much bigger, but we drastically improved the speed of reading and processing the dataset.
+In the end, we decided to store our dataset into a \textit{Hierarchical Data Format} (\textbf{HDF5}) \cite{hdf} designed to store and organize large amounts of data. This format comes with a cost, the files are much bigger, but we drastically improved the speed of reading and processing the dataset.
 
 
 \section{Disassembled features}
 
 The extraction of disassembled code was an easy and fast task. The documentation provides all the information on how to correctly use the disassembler. We wrote a script that extracts the disassembled code for each function and stores it into a \texttt{.dis} file. The script creates a folder for each sample and stores inside the disassembled code.
 
-From the disassembled code, we extracted 5 kinds of various features:
+From the disassembled code, we extracted 5 kinds of features:
 \begin{itemize}
 	\item{Line unigrams}
 	\item{Disassemble unigrams}
@@ -48,7 +44,7 @@ The first block of features is the whole line unigram, we split the disassembled
 \begin{minipage}{.5\linewidth}
 	\centering
 	
-	\caption{Code for function f}
+	\caption{Assembly code of function f}
 	\label{tab:function_f}
 	
 	\medskip
@@ -82,7 +78,8 @@ The first block of features is the whole line unigram, we split the disassembled
 		\toprule
 		\makecell{ Feature }  &  Value \\   
 		
-		\midrule push ebx       & 1         \\
+		\midrule 
+		\texttt{push ebx} & 1         \\
 		\texttt{mov eax,number} & 1                  \\ 
 		\texttt{cmp ebx,eax }   & 2                  \\ 
 		\texttt{add ebx, number}     & 2                  \\ 
@@ -107,7 +104,7 @@ Furthermore, we added a start token (\texttt{"<s>"}) before the first instructio
 	\begin{minipage}{.5\linewidth}
 		\centering
 		
-		\caption{Disassemble unigrams}
+		\caption{Feature vector of disassemble unigrams}
 		\label{tab:dis_uni}
 		
 		\medskip
@@ -134,7 +131,7 @@ Furthermore, we added a start token (\texttt{"<s>"}) before the first instructio
 	\begin{minipage}{.5\linewidth}
 		\centering
 		
-		\caption{Disassemble bigrams}
+		\caption{Feature vector of disassemble bigrams}
 		\label{tab:dis_big}
 		
 		\medskip
@@ -169,13 +166,13 @@ Furthermore, we added a start token (\texttt{"<s>"}) before the first instructio
 
 
 \subsection{Instruction only unigrams and bigrams}
-For the last block of features, we decided to study only the frequency of the different instructions in the code, without considering the registry. As before in the bigrams, we added a start and an end token to avoid linking two instructions from different functions. The features from the previous example would be:
+For the last block of features, we decided to study only the frequency of the different instructions in the code, without considering the registry. As before in the bigrams, we added a start and an end token to avoid linking two instructions from different functions. Tables \ref{tab:instr_uni} and \ref{tab:instr_big} show the features generated from the previous example.
 
 \begin{table}[!htb]
 	\begin{minipage}{.5\linewidth}
 		\centering
 		
-		\caption{Instruction only unigrams}
+		\caption{Feature vector of instruction only unigrams}
 		\label{tab:instr_uni}
 		
 		\medskip
@@ -198,7 +195,7 @@ For the last block of features, we decided to study only the frequency of the di
 	\begin{minipage}{.5\linewidth}
 		\centering
 		
-		\caption{Instruction only bigrams}
+		\caption{Feature vector of instruction only bigrams}
 		\label{tab:instr_big}
 		
 		\medskip
@@ -238,10 +235,8 @@ This first set of features contains the unigrams of the complete Pcode represent
 For each sample we extract, from the corresponding \texttt{.json} file, all the pcodes in that function. We consider as a feature every unique combination of pcodes with input and output varnodes.
 The key for each feature is the concatenation of the PcodeOP, the input and output varnodes. In particular, we construct the key as follow:
 \texttt{PCodeOP\_nodeoutput\#nodeinput*count} of nodes.
+The key of the example in \ref{lst:jsonpcode} is \texttt{call\_ram\#const*2}. As before we counted the occurrences of each key and we built our dataset.
 
-So the key of the example in \ref{lst:jsonpcode} is \texttt{call\_ram\#const*2}.
-
-\clearpage
 \begin{lstlisting}[language=json,firstnumber=1,caption={Example of .json format with PCode},label={lst:jsonpcode}]
 {
 "pcodes": [
@@ -253,11 +248,11 @@ So the key of the example in \ref{lst:jsonpcode} is \texttt{call\_ram\#const*2}.
 }
 \end{lstlisting}
 
-We counted the occurrences of each key and we built our dataset.
+
 
 \subsection{Control Flow Graph Pcode only unigrams and bigrams}
 
-These two sets of features contain the unigrams and bigrams of the pcode only. We built the key using only the pcode operator, and then counted the occurrences. For the bigrams, we concatenated as before the key with the string =>.
+These two sets of features contain the unigrams and bigrams of the pcode only. We built the key using only the pcode operator, and then counted the occurrences. For the bigrams, we concatenated as before the key with the string \texttt{"=>"}.
 
 \subsection{Cyclomatic Complexity}
 
@@ -269,16 +264,14 @@ Then, for each sample, we calculated \textit{maximum}, \textit{mean}, and \texti
 
 One primary task of reverse engineering binary code is to identify library code. Since what the library code does is often known, it is of no interest to an analyst. Hex-Rays has developed the IDA FLIRT signatures to tackle the problem. 
 
-Function ID is Ghidra's function signature system. Unfortunately, Ghidra has very few Function ID datasets. There is only function identification for the Visual Studio supplied libraries. Ghidra's Function ID allows identifying functions based on hashing the masked function bytes automatically.\cite{ghidra_fid}\\
+Function ID is Ghidra's function signature system. Unfortunately, Ghidra has very few Function ID datasets. There is only function identification for the Visual Studio supplied libraries. Ghidra's Function ID allows identifying functions based on hashing the masked function bytes automatically\cite{ghidra_fid}.
 
 We exploit this functionality to determine which of the functions belongs to a standard library and added a boolean field in the \texttt{.json} file, indicating whether that function is or not a standard known function. Then we calculated the number of standard functions in the given sample and use it as a feature.
 
 \section{Rich Header features}
-We used the script in the paper \cite{dubyk2019sans} to calculate the rich hash and pv for each of the samples. Sadly, as pointed out in the paper, not every binary is compiled with the rich header; in fact, only 1669 samples out of 2086 have it. 
+We used the script in paper \cite{dubyk2019sans} to calculate the rich header hash of each sample. Sadly, as pointed out in the paper, not every binary is compiled with the rich header; in fact, only 1669 samples out of 2086 have it. 
 
 The script extracts the \texttt{productID}, the \texttt{productVersion}, and \texttt{productCount}, we concatenated those numbers with a dash \texttt{"-"} to create a key and set 1 if the sample contains the previous key, 0 otherwise.
-
-As suggested by the author, we also calculated a new feature vector without using the productCount field, that is the field that varies the most between all the samples.
 
 \section{Total features}
 Table \ref{tab:num_feat} shows the number of features of each type, with a total number of \textbf{218012} features.

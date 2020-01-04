@@ -5,7 +5,7 @@ This chapter presents the related works we started from to develop this work. Fi
 \section{Malware Triage Based on Static Features and Public APT Reports}
 Laurenza et al. show that it is possible to help an analyst lightening the number of samples to analyze, using a prioritization system \cite{laurenza2017malware}. 
 
-They proposed an architecture for sample prioritization, which, based on a rank score, decides which sample has the priority to be further inspected by an analyst. In this way, it is possible to avoid wasting time analyzing samples that are not important. 
+They propose an architecture for sample prioritization, which, based on a rank score, decides which sample has the priority to be further inspected by an analyst. In this way, it is possible to avoid wasting time analyzing samples that are not important. 
 
 They decide to rely only on static analysis instead of dynamic analysis to improve the speed of processing. In this architecture, the time elapsed for analyzing a classifying the samples is more important than the accuracy of the classification. Since it relies on static analysis, there is no need for sample execution, or to set up a complex virtualized environment. Every sample is processed, and some features are extracted from the header. The knowledge base created is used to classify new malware.
 
@@ -29,7 +29,7 @@ They decide to rely only on static analysis instead of dynamic analysis to impro
 	\label{fig:mal_triage}
 \end{figure}
 
-They proposed a malware triage architecture, based on the identification of malware similar to other malware known to be related to some APTs campaign. The idea is to collect public APT reports and their related samples.  Then, extracting features from the samples and assigning them to the class of the APT they belong to. Those features vectors are used to train a classifier.
+They propose a malware triage architecture, based on the identification of malware similar to other malware known to be related to some APTs campaign. The idea is to collect public APT reports and their related samples.  Then, extracting features from the samples and assigning them to the class of the APT they belong to. Those features vectors are used to train a classifier.
 
 Figure \ref{fig:mal_triage} shows the architecture of both the training and testing phases. The APTs loading plugin frequently loads the information on APT crawled from public reports on the internet. The loading plugin feeds the system with new samples from different sources. The features extraction phase produces the features vectors from the malware, continuously updated by the previous loading plugin. In the classifier phase, a classifier is trained with features vector. 
 
@@ -49,7 +49,6 @@ Sadly with our approach of using code analysis, the main problem is the dimensio
 Laurenza et al. have released \textbf{dAPTaset}, a public database that collects data related to APTs from existing public sources through a semi-automatic methodology and produces an exhaustive dataset \cite{daptaset}.
 
 The database contains information about APT campaigns and their relation with public reports and samples. In our work, we are not interested in all the information contained in this database, but just a few of them. In particular, we need the relation between md5 of the file and APT campaign name. We extracted those columns from the database and saved in a \texttt{.csv} file for future use during features extraction.
-\\
 
 The databes contains more than 2000 samples belonging to 15 different APTs: \textit{APT28,
 APT29, APT30, Carbanak, Desert Falcon, Hurricane Panda, Lazarus Group, Mirage, Patchwork,
@@ -74,9 +73,9 @@ However, the tools used by Caliskan et al. are outdated and no more maintained, 
 
 \section{Rich Header}
 
-The work of Maksim Dubyk \cite{dubyk2019sans} shows how the rich header produces a robust series of data points that can be exploited in static PE-based malware detection. The Rich Header is an undocumented section of \textit{Portable Executable} (\textbf{PE}) header and provides a view of the environment where the executable was built. Firstly, Dubik shows the location of the Rich Header, how to understand and decrypt it, and how to extract it. Then, he shows different techniques to leverage the header for PE-based malware classification. The Rich Header is part of our features vector.
+Maksim Dubyk \cite{dubyk2019sans} shows how the rich header produces a robust series of data points that can be exploited in static PE-based malware detection. The Rich Header is an undocumented section of \textit{Portable Executable} (\textbf{PE}) header and provides a view of the environment where the executable was built. Firstly, Dubik shows the location of the Rich Header, how to understand and decrypt it, and how to extract it. Then, he shows different techniques to leverage the header for PE-based malware classification. The Rich Header is part of our features vector.
 
-When building a PE, there are two distinct phases. The first one is the \textit{compilation phase}, where the high-level instructions from programming language are compiled into machine code, executable by the computer. The second one is the \textit{linking phase},a combination of those different machine code objects into a single executable. The act of combining different objects creates the Rich Header. However, only executables compiled with Microsoft Linker contain the rich header, other compilers, such as gcc or .Net,  do not have it.
+When building a PE, there are two distinct phases. The first one is the \textit{compilation phase}, where the high-level instructions from programming language are compiled into machine code, executable by the computer. The second one is the \textit{linking phase}, a combination of those different machine code objects into a single executable. The act of combining different objects creates the Rich Header. However, only executables compiled with Microsoft Linker contain the rich header. Other compilers, such as gcc or .Net,  do not have it.
 
 \begin{figure}[!h]
 	\centering
