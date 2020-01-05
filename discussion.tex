@@ -1,4 +1,5 @@
 \chapter{Discussion}
+\label{ch:disc}
 
 This chapter shows the results obtained during the evaluation and the tests we made to ensure the effectiveness of our models. 
 
@@ -6,12 +7,12 @@ This chapter shows the results obtained during the evaluation and the tests we m
 
 We write a function to execute different tests using different classificators and hyperparameters. 
 
-As mentioned in Section \ref{sec:cv}, we used the \texttt{StratifiedKFold} class from \textit{Scikit-learn} to cross-validate our tests. This class has a method \texttt{split} that, given the train and test subsets, it returns a range of indexes to select only a portion of the dataset, as shown in Figure \ref{fig:stratified}.  At each fold, different parts of the dataset are chosen as a test subset, but summing the test subset in all the folds, we would obtain the entire dataset. Therefor we create two arrays where, at each fold, we append the predictions made by the classification model and the ones expected. At the end of the cross-validation algorithm, we use the \textit{Scikit-learn} functions \texttt{classification\_report}, \texttt{confusion\_matrix}, and \texttt{accuracy\_score}, with the complete arrays of predictions and expected values, to obtain the metrics needed to evaluate the model.
+As mentioned in Section \ref{sec:cv}, we used the \texttt{StratifiedKFold} class from \textit{Scikit-learn} to cross-validate our tests. This class has a method \texttt{split} that, given the train and test subsets, it returns a range of indexes to select only a portion of the dataset, as shown in Figure \ref{fig:stratified}.  At each fold, different parts of the dataset are chosen as a test subset, but summing the test subset in all the folds, we would obtain the entire dataset. Therefore we create two arrays where, at each fold, we append the predictions made by the classification model and the ones expected. At the end of the cross-validation algorithm, we use the \textit{Scikit-learn} functions \texttt{classification\_report}, \texttt{confusion\_matrix}, and \texttt{accuracy\_score}, with the complete arrays of predictions and expected values, to obtain the metrics needed to evaluate the model.
 
-We chose $k = 10$ because, as shown in literature [cita quaclouno], it's the best value between performances and execution time. 
+We chose $k = 10$ because, as shown in the literature \cite{kohavi1995study}, it's the best value between performances and execution time. 
 We set the \texttt{StratifiedKFold} option \texttt{shuffle} to true, so every time the cross-validation algorithm samples different binaries at each fold, avoiding that classification model focuses only on a very good or lousy subset of the dataset. Furthermore, we repeat each test 5 times, and then we average the results obtained.
 
-For \texttt{RandomForest} and \texttt{XGBoost} models, we found that 300 trees are sufficient to get great results.
+For \texttt{RandomForest} and \texttt{XGBoost} models, we found that 150 trees are the right compromise between performances and execution time.
 
 \section{Features selection}
 In Section \ref{sec:feat_sel}, we presented different methods for feature selection. In this section, we analyze and compare them to find the best subset of features to represent APT malware.
@@ -29,11 +30,11 @@ The second step is to visualize the variance of the dataset. We calculated with 
 	\label{fig:var_all}
 \end{figure}
 
-To remove them we use \texttt{VarianceThreshold} class that removes all low-variance features. Is it possible to set a threshold, if a feature variance is below the threshold, then it is removed. By default, the class removes all zero-variance features. This method removes \textbf{32} features from our dataset.
+To remove them, we use \texttt{VarianceThreshold} class that removes all low-variance features. Is it possible to set a threshold, if a feature variance is below the threshold, then it is removed. By default, the class removes all zero-variance features. This method removes \textbf{32} features from our dataset.
 
 \subsection{Filter methods}
 
-Filter methods works by selecting the best features based on a ranking function. Scikit-learn offers various scoring functions, such as \textit{chi2, f\_classif, mutual\_info\_classif}. To choose the best $k$ features scikit-learn has two classes:
+Filter methods work by selecting the best features based on a ranking function. Scikit-learn offers various scoring functions, such as \textit{chi2, f\_classif, mutual\_info\_classif}. To choose the best $k$ features scikit-learn has two classes:
 \begin{itemize}
 	\item \texttt{SelectKBest: }removes all but the highest $k$ scoring features.
 	\item \texttt{SelectPercentile} removes all but a user-specified highest scoring percentage of features.
@@ -61,10 +62,10 @@ We select respectivly the 25\%, 15\%, and 10\% of the functions \texttt{chi2, fc
 	\caption{Comparison of metrics score for different ranking functions with different percentages selected}\label{fig:ranking}
 \end{figure}
 
-As we can see from results the \texttt{f\_classif} is the one who perform the best, even if it takes a little more time than \texttt{chi2}, . On the contrary, \texttt{mutual\_info\_fclassif} is the slower, it takes half a day to calculate the mutuals information of the features, and it is also the worst in terms of performance.
+As we can see from results, the \texttt{f\_classif} is the one who performs the best, even if it takes a little more time than \texttt{chi2} . On the contrary, \texttt{mutual\_info\_fclassif} is the slower, it takes half a day to calculate the mutuals information of the features, and it is also the worst in terms of performance.
 
-However, as we reduce the percentage of features the performances degrade too. The best percentage is the 25\%, but it keeps over 50000 features, that are not good for our purpose. The classification time, instead, is acceptable, it varies from 58s for 25\% features, to 41s for 10\% features. 
-We cannot rely only on filter methods because they would not shrink our dataset as we intended. So we tried other methods for features selection provided by \textit{scikit-learn}.
+However, as we reduce the percentage of features, the performances degrade too. The best percentage is 25\%, but it keeps over 50000 features, which are not good for our purpose. The classification time, instead, is acceptable, it varies from 58s for 25\% features, to 41s for 10\% features. 
+We cannot rely only on filter methods because they would not shrink our dataset as we intended. So we tried other methods for feature selection provided by \textit{scikit-learn}.
 
 
 
@@ -131,9 +132,9 @@ We cannot rely only on filter methods because they would not shrink our dataset 
 
 \subsection{Embedded Methods}
 
-Embedded methods use models that have build-in feature selection methods. \texttt{RandomForestClassifier} has a field \texttt{feature\_importances} to rank all the features from best to worst. In particular \textit{scikit-learn} provides a \texttt{SelectFromModel} class, that using a classifier that has a build-in feature importance method, select the best features based on the model. It is possible to set a \texttt{max\_features} parameter, to limit the number of selected features.
+Embedded methods use models that have build-in feature selection methods. \texttt{RandomForestClassifier} has a field \texttt{feature\_importances} to rank all the features from best to worst. In particular, \textit{scikit-learn} provides a \texttt{SelectFromModel} class, that using a classifier that has a build-in feature importance method, select the best features based on the model. It is possible to set a \texttt{max\_features} parameter to limit the number of selected features.
 
-However, the \texttt{SelectFromModel} algorithm chooses 12781 features in just 18s. Even with \texttt{max\_features} set to 21781 (the 10\% of the entire dataset), the algorithm still chooses only the 12781 features. Comparing the performances with the filter methods presented before we find that \texttt{SelectFromModel} is more accurate and the fastest in classification because there are less features. Based on those tests we prefer to discard filter methods and keep using \texttt{SelectFromModel}.
+However, the \texttt{SelectFromModel} algorithm chooses 12781 features in just 18s. Even with \texttt{max\_features} set to 21781 (the 10\% of the entire dataset), the algorithm still chooses only the 12781 features. Comparing the performances with the filter methods presented before, we find out that \texttt{SelectFromModel} is more accurate and the fastest in classification because there are fewer features in the feature vector. Based on those tests we prefer to discard filter methods and keep using \texttt{SelectFromModel}.
 
 \begin{figure}[]
 	\centering
@@ -151,6 +152,17 @@ However, the \texttt{SelectFromModel} algorithm chooses 12781 features in just 1
 \end{figure}
 
 
-We run various tests with different numbers of \texttt{max	features} to compare the results. The tests are shown in Figure \ref{fig:model}. Figure \ref{fig:model-time} shows how the time varies related to the number of features selected.
+We run various tests with different numbers of \texttt{max	features} to compare the results. The tests are shown in Figure \ref{fig:model}. Figure \ref{fig:model-time} shows how time varies related to the number of features selected.
 
-As we can see from Figure \ref{fig:model-metrics} there is no big difference in the tests made between \textit{accuracy, precision,recall, or f1-score}. For example, the maximum difference in accuracy is just 0.0016s. This happens because \texttt{RandomForestClassifier} already performs features selection using \texttt{feature\_importances} during the training phase. Since the time is dependent to the number of features, we choose to balance the performances and the execution time, thus we select the best 3000 features.
+As we can see from Figure \ref{fig:model-metrics} there is no big difference in the tests made between \textit{accuracy, precision,recall, or f1-score}. For example, the maximum difference in accuracy is just 0.0016s. This happens because \texttt{RandomForestClassifier} already performs features selection using \texttt{feature\_importances} during the training phase. Since the time is dependent on the number of features, we choose to balance the performances and the execution time selecting the best 3000 features.
+
+\subsection{Wrapped methods}
+
+As explained in Section \ref{sec:wrapper} wrapper methods are the most computational expensive. \textit{Scikit-learn} has \texttt{RFE} and \texttt{RFECV} classes for recursive feature elimination. 
+
+From \textit{scikit-learn} documentation \cite{rfe} "\textit{The goal of recursive feature elimination (RFE) is to select features by recursively considering smaller and smaller sets of features. First, the estimator is trained on the initial set of features and the importance of each feature is obtained either through a coef\_ attribute or through a feature\_importances\_ attribute. Then, the least important features are pruned from current set of features. That procedure is recursively repeated on the pruned set until the desired number of features to select is eventually reached"}.
+
+The \texttt{RFECV} works the same as \texttt{RFE}, but it uses a cross-validation algorithm to validate the evaluation performance.
+The model used is \texttt{RandomForestClassification} and \texttt{StratifiedKFold} as cross-validation technique.
+
+Sadly, it is really slow. We tried using the entire dataset, but even after three days of computing, the algorithm didn't stop. We changed strategy, and we tried to use the features calculated from filter methods, but again it took more than three days. In the end, we decide to use the 3000 features selected by \texttt{SelctFromModel}. It takes a considerable amount of time compared to other feature selection techniques.

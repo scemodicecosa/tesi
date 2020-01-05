@@ -1,4 +1,5 @@
 \chapter{Classification}
+\label{ch:classif}
 This chapter presents the classification model used in our task, the validation techniques and the features selection algorithm applied to our data.
 \section{Random Forest}
 Random forest is an ensemble learning method for classification, regression, and other tasks that operates by constructing multiple decision trees at training time and outputting the class that is the mode of the classes (classification) or mean prediction (regression) of the individual trees. \cite{ho1995random}
@@ -193,7 +194,7 @@ Scikit provides different functions for filter feature selection, such as Mutual
 
 
 \subsection{Wrapper methods}
-
+\label{sec:wrapper}
 Wrapper methods depend on the predictive model to choose a subset of features. The wrapper algorithm does not know the machine learning model used, and it is considered a black box \cite{kohavi1997wrappers}. 
 
 The algorithm relies on the model to evaluate the performance of each subset of features. Each subset trains a model, and the model error rate establishes the score of the given subset. This procedure is repeated until an optimal subset of features is found. 
