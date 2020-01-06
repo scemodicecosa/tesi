@@ -3,6 +3,28 @@
 
 This chapter shows the results obtained during the evaluation tests. We show the feature selection technique used, and we compare the results to reach the optimal number of features in terms of time and performance metrics.
 
+\section{Performance Metrics}
+
+To evaluate the performance of a model, we analyze its metrics such as \textit{accuracy, precision, recall, and f1-score}. Before explaining them we need to introduce four terms:
+
+\begin{itemize}
+	\item \textbf{True Positive (TP)}: These are the observation that are positive and correct, when the value of the class is \textit{yes} and the value predicted is also \textit{yes};
+	\item \textbf{True Negative (TN)}: These are the observations that are negative and correct, when the value of the class id \textit{no} and the value predicted is also \textit{no};
+	\item \textbf{False Positive (FP)}: These are the observations that are wrong, when the value of the class is  \textit{no} and the predicted value is \textit{yes}; 
+	\item \textbf{False Negative (FN)}: These are the observations that are wrong, when the value of the class is  \textit{yes} and the predicted value is \textit{no}.
+	
+	
+\end{itemize} 
+
+We can use those four parameters to calculate the metrics:
+\begin{itemize}
+	\item \textbf{Accuracy}: It is the ratio of correct observations to the total observations. It can be expressed as $Accuracy = (TP + TN) / (TP + TN + FP + FN)$;
+	\item \textbf{Precision}: It is the ratio of correct positive observation to the total of positive observation. It can be expressed as $Precision = TP/(TP + FP)$;
+	\item \textbf{Recall}: It is the ratio of  correctly predicted positive observations to the all observations in actual class. It cas be expressed as $Recall = TP/(TP + FN)$;
+	\item \textbf{F1-Score}: It is the weighted average of Precision and Recall. It can be expressed as $F1-score = 2 * (Recall * Precision) / (Recall + Precision)$.
+\end{itemize}
+Those metrics indicate the performances of a model classifier. Since we are developing a malware prioritization framework, we are interested in Precision because we want false positives to overload the work of the analysts. 
+
 \section{Testing flow?}
 \label{sec:flow}
 
