@@ -163,6 +163,67 @@ As explained in Section \ref{sec:wrapper} wrapper methods are the most computati
 From \textit{scikit-learn} documentation \cite{rfe} "\textit{The goal of recursive feature elimination (RFE) is to select features by recursively considering smaller and smaller sets of features. First, the estimator is trained on the initial set of features and the importance of each feature is obtained either through a coef\_ attribute or through a feature\_importances\_ attribute. Then, the least important features are pruned from current set of features. That procedure is recursively repeated on the pruned set until the desired number of features to select is eventually reached"}.
 
 The \texttt{RFECV} works the same as \texttt{RFE}, but it uses a cross-validation algorithm to validate the evaluation performance.
-The model used is \texttt{RandomForestClassification} and \texttt{StratifiedKFold} as cross-validation technique.
+The model used is \texttt{RandomForest} and \texttt{StratifiedKFold} as cross-validation technique.
 
-Sadly, it is really slow. We tried using the entire dataset, but even after three days of computing, the algorithm didn't stop. We changed strategy, and we tried to use the features calculated from filter methods, but again it took more than three days. In the end, we decide to use the 3000 features selected by \texttt{SelctFromModel}. It takes a considerable amount of time compared to other feature selection techniques.
+Unfortunately, it is really slow. We tried using the entire dataset, but even after three days of computing, the algorithm didn't stop. We changed strategy, and we tried to use the features calculated from filter methods, but again it took more than three days. In the end, we decide to use the features selected by \texttt{SelctFromModel}. However, \texttt{RFECV} takes a considerable amount of time compared to other feature selection techniques.
+
+In particular, we run tests using both the 3000 and the 1000 features selected before. As expected, the time increases exponentially with the number of features. The 3000 dataset took almost 1 hour to reduce to the optimal number of features, while the 1000 one took only 12 minutes.  Figure \ref{fig:rfecv} shows the decrease in performance as we remove more and more features from the dataset. Figure \ref{fig:rfecv-comparison} shows the comparison of evaluation metrics between the two different datasets.
+Comparing the results, we did not notice a big difference in terms of accuracy precision or recall. Even if one algorithm stops at \textbf{2616} features and the other to only \textbf{842}. However, the calculation time was way longer for the first dataset. 
+
+We continue our tests using the output of \texttt{RFECV} for 1000 features, because it was faster to calculate. 
+We apply again the \texttt{SelectFromModel} algorithm to lastly reduce the number of features, leaving us with only 305 features.
+
+\begin{figure}[]
+	\centering
+	\begin{subfigure}[t]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{rfecv-from3000.png}
+		\caption{Initial dataset contains 3000 features}\label{fig:rfecv3000}		
+	\end{subfigure}
+	\begin{subfigure}[t]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{rfecv1000.png}
+		\caption{Initial dataset contains 1000 features}\label{fig:rfecv1000}
+	\end{subfigure}
+	\caption{Relation between cross validation scores and number of features.}\label{fig:rfecv}
+\end{figure}
+
+\begin{figure}[]
+	\centering
+	\includegraphics[width=0.6\columnwidth]{rfecv-confronto.png}
+	\caption{RFECV applied respectively to a dataset of 3000, and 1000 features.}
+	\label{fig:rfecv-comparison}
+\end{figure}
+
+We stopped at 305 features, because we did not notice any improvement in terms of classification time. We consider 5.5s an acceptable time for classification. Furthermore, the less features we got, the worst are the performance in evaluation, so we decide to keep that number of features.
+
+Analyzing the type of features we have, we find that almost all the blocks of features still has some feature in the dataset. The Table \ref{tab:num-feat-842} reports the number of features keep per type. The standard library features are removed during features selection, the others are significantly reduced.  
+
+\begin{table}[]
+	\caption{Comparison between initial number of features, and number of features after feature selection.}
+	\label{tab:num-feat-842}
+	\begin{tabular}{lll}
+		\toprule
+		Features type                    & Number & Initial number\\
+		\midrule
+		Disassemble Unigrams   &19 & 2476           \\
+		Disassemble Bigrams    &62   & 39697          \\
+		Disassemble Line Unigrams  &28& 25927          \\
+		Disassemble Instruction Unigrams & 9 & 347   \\
+		Disassemble Instruction Bigrams  & 19 & 8125    \\
+		CFG Unigrams    &26 & 13536   \\
+		CFG Bigrams      &316 & 118852  \\
+		CFG Code Unigrams  & 14 & 61     \\
+		CFG Code Bigrams   & 94 & 2026  \\
+		CFG Complexity          & 2 & 3     \\
+		Standard Library Function & 0 & 5577  \\
+		Rich Header   & 4 & 1217  \\
+		\bottomrule	
+	\end{tabular}
+\end{table}
+
+
+\section{Model Evaluation}
+
+The following section presents the tests made on the final dataset using two different models: \texttt{RandomForestClassificator} ans \texttt{XGBoost}.
+

@@ -1,2 +1,10 @@
-\chapter{Future works}
+\chapter{Conclusions and Future Works}
 \label{ch:future}
+
+In the last decades the number of malware increased exponentially. Between all those malware, there is a particular type known as Advanded Persitent Threat, that are really dangerous. APT is an advanced adversary which goal is to intrude secretly into comptuter systems of big companies or foreign govenrments, to steal valuable information. We proposed a framework to detect if a sample belongs or not to an APT. The analysts can then concentrate their resources only on samples that could be really threatening. This thesis enrich the static features used in malware triage in \cite{laurenza2017malware}, adding features from code analysis. A classifier is trained with features from disassembled code, control flow graph, cyclomatic complexity and rich header. Even if static features are not sufficient to classify different malware, they are fast and easy to compute. For early identification in a malware APT prioritization framework, they let us reach really promising results. The precision, i.e. the number of false positives, is crucial for this framework. We don't want an analyst to focus on a sample targeted as potential APT when instead is just a random malware. In our thesis, APT samples are identified on average with a precision and accuracy over 95\%, some samples even with a precision ad accuracy of 100\%. Overall, using features selection, we reduced the classification time, and improved a little bit the performance, with respect to the original dataset.  However, the dAPTaset is really small to be considered a complete dataset, and we tested only samples known to be related to some APT.
+
+As future works, first of all, we want to extend this thesis also to non-APT malware. The system should recognize which samples are non-APT and classify the APT membership of the others. 
+
+Secondly, we want to test different models and techniques. We would like to focus on Principle Component Analysis to diminish the dimensionality of our dataset. 
+
+Furthermore, we would like to apply a neural network approach to improve evaluation results. We want to train a network, using the documents extracted above. 
