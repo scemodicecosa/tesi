@@ -42,16 +42,30 @@ The \textit{entry blocks} are the ones where the flow starts; the \textit{exit b
 
 The CFG is useful in code analysis, to determine if some portion of the code is inaccessible.
 
-\begin{figure}[!h]
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=1.0\columnwidth]{cfg.png}
-	\caption{CFG of different statements and loops. \\
-	(a) if-then-else\\
-	(b) while loop\\
-	(c) natural loop with two exit points\\
-	(d) loop with two entry points	
-}
-	\label{fig:cfg}
+	\begin{subfigure}[t]{.24\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{cfga.png}
+		\caption{if-then-else}\label{fig:cfga}		
+	\end{subfigure}
+	\begin{subfigure}[t]{.24\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{cfgb.png}
+	\caption{while loop}\label{fig:cfgb}		
+	\end{subfigure}
+	\begin{subfigure}[t]{.24\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{cfgc.png}
+	\caption{natural loop with two exit points}\label{fig:cfgc}		
+	\end{subfigure}
+	\begin{subfigure}[t]{.24\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{cfgd.png}
+	\caption{loop with two entry point}\label{fig:cfgd}		
+	\end{subfigure}
+
+	\caption{Control Flow Graph of different statements and loops}\label{fig:cfg}
 \end{figure}
 
 \subsection{Cyclomatic Complexity}

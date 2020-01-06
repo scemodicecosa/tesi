@@ -1,9 +1,10 @@
 \chapter{Discussion}
 \label{ch:disc}
 
-This chapter shows the results obtained during the evaluation and the tests we made to ensure the effectiveness of our models. 
+This chapter shows the results obtained during the evaluation tests. We show the feature selection technique used, and we compare the results to reach the optimal number of features in terms of time and performance metrics.
 
 \section{Testing flow?}
+\label{sec:flow}
 
 We write a function to execute different tests using different classificators and hyperparameters. 
 
@@ -14,7 +15,7 @@ We set the \texttt{StratifiedKFold} option \texttt{shuffle} to true, so every ti
 
 For \texttt{RandomForest} and \texttt{XGBoost} models, we found that 150 trees are the right compromise between performances and execution time.
 
-\section{Features selection}
+\section{Feature selection}
 In Section \ref{sec:feat_sel}, we presented different methods for feature selection. In this section, we analyze and compare them to find the best subset of features to represent APT malware.
 
 \subsection{Scaling dataset}
@@ -154,7 +155,7 @@ However, the \texttt{SelectFromModel} algorithm chooses 12781 features in just 1
 
 We run various tests with different numbers of \texttt{max	features} to compare the results. The tests are shown in Figure \ref{fig:model}. Figure \ref{fig:model-time} shows how time varies related to the number of features selected.
 
-As we can see from Figure \ref{fig:model-metrics} there is no big difference in the tests made between \textit{accuracy, precision,recall, or f1-score}. For example, the maximum difference in accuracy is just 0.0016s. This happens because \texttt{RandomForestClassifier} already performs features selection using \texttt{feature\_importances} during the training phase. Since the time is dependent on the number of features, we choose to balance the performances and the execution time selecting the best 3000 features.
+As we can see from Figure \ref{fig:model-metrics} there is no big difference in the tests made between \textit{accuracy, precision,recall, or f1-score}. For example, the maximum difference in accuracy is just 0.0016s. This happens because \texttt{RandomForestClassifier} already performs feature selection using \texttt{feature\_importances} during the training phase. Since the time is dependent on the number of features, we choose to balance the performances and the execution time selecting the best 3000 features.
 
 \subsection{Wrapped methods}
 
@@ -197,7 +198,7 @@ We apply again the \texttt{SelectFromModel} algorithm to lastly reduce the numbe
 
 We stopped at 305 features, because we did not notice any improvement in terms of classification time. We consider 5.5s an acceptable time for classification. Furthermore, the less features we got, the worst are the performance in evaluation, so we decide to keep that number of features.
 
-Analyzing the type of features we have, we find that almost all the blocks of features still has some feature in the dataset. The Table \ref{tab:num-feat-842} reports the number of features keep per type. The standard library features are removed during features selection, the others are significantly reduced.  
+Analyzing the type of features we have, we find that almost all the blocks of features still has some feature in the dataset. The Table \ref{tab:num-feat-842} reports the number of features keep per type. The standard library features are removed during feature selection, the others are significantly reduced.  
 
 \begin{table}[]
 	\caption{Comparison between initial number of features, and number of features after feature selection.}
@@ -225,5 +226,24 @@ Analyzing the type of features we have, we find that almost all the blocks of fe
 
 \section{Model Evaluation}
 
-The following section presents the tests made on the final dataset using two different models: \texttt{RandomForestClassificator} ans \texttt{XGBoost}.
+The following section presents the tests made on the final dataset using two different models: \texttt{RandomForestClassifier} ans \texttt{XGBoostClassifier}.
 
+We compared the results obtained with this different models, and compare them to performances of the initial dataset.
+
+Table \ref{tab:final} summarize the executions. In the table the term \texttt{RF} means RandomForestClassifier, \texttt{XBG} means XGBoostClassifier, and \texttt{FS} means Feature Selection. To run the final tests, we chose to set  to 20 the number of repetition presented in Section \ref{sec:flow} to get a more exhaustive result.\\
+The \texttt{RandomForestClassifier} is the fastest and the most accurate. With only 5s per execution, it reaches a surprisingly accuracy of 95.21\% versus the 94.76\% of \texttt{XGBoostClassifier}. Compared with the original dataset we went from more than 200 thousands features to just 304. Analyzing the performances of entire dataset and the one with feature selected, we notice that the execution time is obviously slower with the entire dataset.However,the performances metrics increased a little with our subset of relevant features.
+
+\begin{table}[]
+	\centering
+	\caption{Comparison of execution time and metrics of different models}
+	\label{tab:final}
+	\begin{tabular}{lrcccc}
+		\toprule
+		\textbf{Algorithm}                          & \textbf{Time}    & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall}  & \textbf{F1-Score} \\
+		\midrule
+		RF with FS & 5.22s   & 95.21\%  & 95.24\%   & 95.21\% & 95.20\%  \\
+		XGB with FS      & 53.14s & 94.76\%  & 94.78\%   & 94.76\% & 94.74\%  \\
+		RF with full dataset   &  366.65s  & 94.98\% &       95.03\%    &   94.98\%      & 94.97\%\\
+		\bottomrule         
+	\end{tabular}
+\end{table}

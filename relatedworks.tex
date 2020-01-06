@@ -66,7 +66,7 @@ Then with a decompiler, they extracted the \textit{Control Flow Graph} and the \
 
 For this purpose, they used \textbf{ndisasm} for disassembling the binaries. Then using \textbf{radare2}, they generated the \textit{Control Flow Graph}. They used \textbf{Hexrey decompiler} for decompiling the executables and generating their source code. Lastly they used \textbf{Joern}, a C fuzzy parser, to parse the output of \textbf{Hexrey decompiler} and to produce the \textit{Abstract Syntax Tree}.
 
-They used different types of features selection techniques, such as WEKA's information gain, to reduce the number of features to only 53. They trained a \textit{RandomForestClassifier} with the dataset created to de-anonymize the authors correctly.
+They used different types of feature selection techniques, such as WEKA's information gain, to reduce the number of features to only 53. They trained a \textit{RandomForestClassifier} with the dataset created to de-anonymize the authors correctly.
 
 However, the tools used by Caliskan et al. are outdated and no more maintained, so we decided to use the novel open-source tool Ghidra to write the script and extract the information we want. In this way, we significantly reduced the amount of time for feature extraction.
 
