@@ -58,7 +58,7 @@ For \texttt{RandomForest} and \texttt{XGBoost} models, we found that 150 trees a
 In Section \ref{sec:feat_sel}, we presented different methods for feature selection. In this section, we analyze and compare them to find the best subset of features to represent APT malware.
 
 \subsection{Scaling dataset}
-The first step for selecting features is to scale the dataset. It is essential because, in our case, we have features with very different scales and some outliers. These two aspects can decrease the predictive performance of the classification model. We chose the \texttt{MaxAbsScaler} from \textit{scikit-learn} because it fits our needs. The scaler does not shift or center the data, and it does not destroy the sparsity of the features. For each feature, the algorithm calculates the maximum value and scales all the features in the column, such that the maximum value is equal to 1.0. All the features will be in the range of 0 - 1.0, and their variance will be scaled to the range 0 - 0.1 too.
+The first step for selecting features is to scale the dataset. It is essential because, in our case, we have features with very different scales and some outliers. These two aspects can decrease the predictive performance of the classification model. We chose the \texttt{MaxAbsScaler} from \textit{scikit-learn} because it fits our needs. The scaler does not shift or center the data, and it does not destroy the sparsity of the features. For each feature, the algorithm calculates the maximum value and scales all the features in the column, such that the maximum value is equal to 1.0. All the features are in the range of 0 - 1.0, and their variance are scaled too and now comparable.
 
 \subsection{Remove low variance}
 The second step is to visualize the variance of the dataset. We calculated with the \textit{NumPy} \texttt{std} function on axis 0, and we visualize feature variances with \textit{matplotlib}. Figure \ref{fig:var_all} shows the variance of the entire dataset. As we can see, some features have zero variance, and this means that they are constant over all the samples. Thus they are not useful for classification.
@@ -275,12 +275,12 @@ Analyzing the type of features we have, we find that almost all the blocks of fe
 
 The following section presents the tests made on the final dataset using two different models: \texttt{RandomForestClassifier} ans \texttt{XGBoostClassifier}.
 
-We compared the results obtained with this different models, and compare them to performances of the initial dataset.
+We compared the results obtained with this different models, and compare them to performances of the initial dataset. 
 
 Table \ref{tab:final} summarizes the executions. In the table, the term \texttt{RF} means RandomForestClassifier, \texttt{XBG} means XGBoostClassifier, and \texttt{FS} means Feature Selection. To run the final tests, we chose to set  to 20 the number of repetition presented in Section \ref{sec:flow} to get a more exhaustive result.\\
 The \texttt{RandomForestClassifier} is the fastest one and the most accurate. With only 5s per execution, it reaches a surprisingly accuracy of 95.21\% versus the 94.76\% of \texttt{XGBoostClassifier}. Compared with the original dataset we went from more than 200 thousands features to just 304. Analyzing the performances with entire features and with feature selected, we notice that the execution time is obviously slower with the entire dataset. Moreover, the performancs metrics increased a little with our subset of relevant features.
 
-Table \ref{tab:per-class} shows a detailed representation of Precision, Recall, and F1-score divided per class. We managed to reach 100\% of precision in some classes, such as \textit{Sandwork} and \textit{Volatile Cedar}. \textit{Violin Panda} has the worst performance with metrics around 82\%, probably because there are few samples available, only 22. Table
+Table \ref{tab:per-class} shows a detailed representation of Precision, Recall, and F1-score divided per class. We managed to reach 100\% of precision in some classes, such as \textit{Sandwork} and \textit{Volatile Cedar}. \textit{Violin Panda} has the worst performance with metrics around 82\%, probably because there are only 22 samples available. Table
 \ref{tab:conf-matr} shows the Confusion Matrix of the execution. The labels used in the table \texttt{A,B,..,P,Q} corresponds to the APT classes presented in Table \ref{tab:per-class}. 
 \begin{table}[!h]
 	\centering
