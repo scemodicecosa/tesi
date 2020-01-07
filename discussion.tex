@@ -5,13 +5,28 @@ This chapter shows the results obtained during the evaluation tests. We show the
 
 \section{Performance Metrics}
 
-To evaluate the performance of a model, we analyze its metrics such as \textit{accuracy, precision, recall, and f1-score}. Before explaining them we need to introduce four terms:
+To evaluate the performance of a model, we analyze its metrics such as \textit{accuracy, precision, recall, and f1-score}. Before explaining them we need to introduce different terms:
+
+The \textit{confusion matrix} (CM) is a summary of prediction results, divided by class. The rows represent the instances of actual value per class, the columns represent the instances of predicted value per class. In Table \ref{tab:cm} we present an example of confusion matrix. The first row represents the instances where the actual class is "yes", in particular its intersection with the first column represents the number of samples that are correctly predicted as "yes" (value 5 in the CM). The intersection with the second
+column indicates the number samples that belong to the \textit{yes} but that the classifier predicted as \textit{no} (value 2 in the CM). The second row contains the samples that has a \textit{no} class. The intersection with the first column indicates the number of samples predicted as \textit{yes} while they are a \textit{no} (value 1 in the CM) , and the intersection with the second columns represents the number of \textit{no} samples predicted correctly (value 4 in the CM).
+\begin{table}[h]
+	\centering
+	\caption{Confusion matrix example}
+	\label{tab:cm}
+	\begin{tabular}{|l|l|c|c|}
+		\hline
+		& \multicolumn{3}{c|}{Predicted class}                                             \\ \hline
+		\multirow{3}{*}{Actual class} &             & \multicolumn{1}{l|}{class = yes} & \multicolumn{1}{l|}{class = no} \\ \cline{2-4} 
+		& class = yes & 5                                & 2                               \\ \cline{2-4} 
+		& class = no  & 1                                & 4                               \\ \hline
+	\end{tabular}
+\end{table}
 
 \begin{itemize}
-	\item \textbf{True Positive (TP)}: These are the observation that are positive and correct, when the value of the class is \textit{yes} and the value predicted is also \textit{yes};
-	\item \textbf{True Negative (TN)}: These are the observations that are negative and correct, when the value of the class id \textit{no} and the value predicted is also \textit{no};
-	\item \textbf{False Positive (FP)}: These are the observations that are wrong, when the value of the class is  \textit{no} and the predicted value is \textit{yes}; 
-	\item \textbf{False Negative (FN)}: These are the observations that are wrong, when the value of the class is  \textit{yes} and the predicted value is \textit{no}.
+	\item \textbf{True Positive (TP)}: These are the observation that are positive and correct, when the value of the class is \textit{yes} and the value predicted is also \textit{yes} (5);
+	\item \textbf{True Negative (TN)}: These are the observations that are negative and correct, when the value of the class id \textit{no} and the value predicted is also \textit{no} (4);
+	\item \textbf{False Positive (FP)}: These are the observations that are wrong, when the value of the class is  \textit{no} and the predicted value is \textit{yes} (1); 
+	\item \textbf{False Negative (FN)}: These are the observations that are wrong, when the value of the class is  \textit{yes} and the predicted value is \textit{no} (2).
 	
 	
 \end{itemize} 
@@ -23,7 +38,8 @@ We can use those four parameters to calculate the metrics:
 	\item \textbf{Recall}: It is the ratio of  correctly predicted positive observations to the all observations in actual class. It cas be expressed as $Recall = TP/(TP + FN)$;
 	\item \textbf{F1-Score}: It is the weighted average of Precision and Recall. It can be expressed as $F1-score = 2 * (Recall * Precision) / (Recall + Precision)$.
 \end{itemize}
-Those metrics indicate the performances of a model classifier. Since we are developing a malware prioritization framework, we are interested in Precision because we want false positives to overload the work of the analysts. 
+Those metrics indicate the performances of a model classifier. Since we are developing a malware prioritization framework, we are interested in Precision because we do not want false positives to increase the workload of the analysts. 
+
 
 \section{Testing flow?}
 \label{sec:flow}
@@ -255,7 +271,9 @@ We compared the results obtained with this different models, and compare them to
 Table \ref{tab:final} summarize the executions. In the table the term \texttt{RF} means RandomForestClassifier, \texttt{XBG} means XGBoostClassifier, and \texttt{FS} means Feature Selection. To run the final tests, we chose to set  to 20 the number of repetition presented in Section \ref{sec:flow} to get a more exhaustive result.\\
 The \texttt{RandomForestClassifier} is the fastest and the most accurate. With only 5s per execution, it reaches a surprisingly accuracy of 95.21\% versus the 94.76\% of \texttt{XGBoostClassifier}. Compared with the original dataset we went from more than 200 thousands features to just 304. Analyzing the performances of entire dataset and the one with feature selected, we notice that the execution time is obviously slower with the entire dataset.However,the performances metrics increased a little with our subset of relevant features.
 
-\begin{table}[]
+Table \ref{tab:per-class} shows a detailed representation of Precision, Recall, and F1-score divided per class. We managed to reach 100\% of precision in some classes, such as \textit{Sandwork} and \textit{Volatile Cedar}. \textit{Violin Panda} has the worst performance with metrics around 82\%, probably because there are few samples available, only 22. Table
+\ref{tab:conf-matr} shows the Confusion Matrix of the execution. The labels used in the table \texttt{A,B,..,P,Q} corresponds to the APT classes presented in Table \ref{tab:per-class}. 
+\begin{table}[!h]
 	\centering
 	\caption{Comparison of execution time and metrics of different models}
 	\label{tab:final}
@@ -267,5 +285,76 @@ The \texttt{RandomForestClassifier} is the fastest and the most accurate. With o
 		XGB with FS      & 53.14s & 94.76\%  & 94.78\%   & 94.76\% & 94.74\%  \\
 		RF with full dataset   &  366.65s  & 94.98\% &       95.03\%    &   94.98\%      & 94.97\%\\
 		\bottomrule         
+	\end{tabular}
+\end{table}
+
+
+\begin{table}[!h]
+	
+	\centering
+	\caption{Detailed values divided per APT class of Precision, Recall, F1-score, and number of samples.}
+	\label{tab:per-class}
+	\begin{tabular}{lcccc}
+		\toprule
+		APT & Precision & Recall & F1-Score & Support \\
+		\midrule
+		APT28 & 89.65\% & 92.21\% & 90.9\% & 68 \\
+		
+		APT29 & 95.25\% & 94.32\% & 94.78\% & 205 \\
+		
+		APT30 & 99.06\% & 98.27\% & 98.66\% & 101 \\
+		
+		Carbanak & 93.17\% & 89.61\% & 91.35\% & 76 \\
+		
+		Desert Falcon & 91.9\% & 87.89\% & 89.82\% & 45 \\
+		
+		Hurricane Panda & 98.2\% & 95.95\% & 97.06\% & 315 \\
+		
+		Lazarus Group & 93.67\% & 94.05\% & 93.85\% & 58 \\
+		
+		Mirage & 89.64\% & 83.77\% & 86.6\% & 53 \\
+		
+		Patchwork & 94.97\% & 96.78\% & 95.87\% & 557 \\
+		
+		Sandwork & 100.0\% & 95.45\% & 97.67\% & 44 \\
+		
+		Shiqiang & 97.07\% & 90.0\% & 93.39\% & 31 \\
+		
+		Transparent Tribe & 95.21\% & 97.17\% & 96.18\% & 267 \\
+		
+		Violin Panda & 82.18\% & 82.61\% & 82.37\% & 23 \\
+		
+		Volatile Cedar & 100.0\% & 94.71\% & 97.27\% & 35 \\
+		
+		Winnti Group & 93.97\% & 97.13\% & 95.52\% & 176 \\
+		\bottomrule
+		
+	\end{tabular}
+\end{table}
+
+
+
+\begin{table}[]
+	\caption{Confusion Matrix of \texttt{RandomForestClassifier} with the reduced dataset. Labels indicating APT classes are in the same order as in Table \ref{tab:per-class}  }
+	\label{tab:conf-matr}
+	\begin{tabular}{l|lllllllllllllll}
+		
+		& A & B & C & D & E & F & G & H & I & L & M & N & O & P & Q \\
+		\hline
+		A & 63 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 4 \\
+		B & 1 & 193 & 0 & 0 & 0 & 0 & 0 & 0 & 6 & 0 & 0 & 3 & 0 & 0 & 1 \\
+		C & 0 & 0 & 99 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		D & 3 & 2 & 0 & 68 & 0 & 0 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		E & 0 & 1 & 0 & 0 & 40 & 0 & 0 & 0 & 3 & 0 & 0 & 2 & 0 & 0 & 0 \\
+		F & 2 & 1 & 1 & 1 & 0 & 302 & 0 & 0 & 3 & 0 & 0 & 3 & 0 & 0 & 1 \\
+		G & 0 & 0 & 0 & 0 & 0 & 0 & 55 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		H & 1 & 0 & 0 & 0 & 0 & 1 & 3 & 44 & 3 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		I & 0 & 3 & 0 & 2 & 3 & 1 & 0 & 0 & 539 & 0 & 0 & 4 & 4 & 0 & 1 \\
+		L & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 42 & 0 & 0 & 0 & 0 & 1 \\
+		M & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 2 & 1 & 0 & 28 & 0 & 0 & 0 & 0 \\
+		N & 0 & 2 & 0 & 0 & 1 & 0 & 0 & 0 & 3 & 0 & 0 & 259 & 0 & 0 & 1 \\
+		O & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 0 & 1 & 0 & 19 & 0 & 0 \\
+		P & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 33 & 0 \\
+		Q & 0 & 0 & 0 & 2 & 0 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 171 
 	\end{tabular}
 \end{table}
