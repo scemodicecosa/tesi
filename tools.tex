@@ -21,19 +21,14 @@ If we want to understand a binary executable, but its source code is not availab
 
 \subsection{Disassembly code}
 
-Assembly language is a low-level programming language that has a substantial correspondence with the architecture's machine code. The program used to convert the assembly instruction to machine code instruction is called assembler. Since the assembly depends on the machine code, there is an assembly language, with its assembler, for each architecture.
+Every computer has a microprocessor to handle all the calculations and tasks. The microprocessor understands a language known as machine code, formed by various instructions that are sequences of \texttt{0} and \texttt{1}. Assembly language is a low-level programming language that has a substantial correspondence with the architecture's machine code instructions.
 
-With a disassembler, it is possible to revert the actions made by the assembler, so it's possible to translate machine code instruction to assembly language. The output code is formatted for human readability.
-
-\subsection{Decompiler?}
-
-The decompiler is a program that takes as input a binary executable and produces as output a high-level representation of the source code of the program. It is the opposite of a compiler, which, given a source code, generates an executable. The output of the decompiler can be recompiled, and the executable will have the same behavior as the first one. 
-
-Unfortunately, the decompiler is not able to revert correctly the executable, and often it produces obfuscated code. The obfuscated code behaves in the same way, but it is harder for an analyst to understand it.
+A program, known as \textit{assembler}, is used to convert assembly instructions to machine code instructions. The program used to revert the actions made by an assembler is the disassembler. It takes a raw executables and translate every instruction into assembly instructions formatted for human-readability. A programmer can inspect a binary by looking at its disassembled code. Disassembled code contains all the functions, statements and behavior of the executable. Using some RE tools, such as Ghidra or IDA, an analyst can navigate the code, comments it, rename functions and variables for a better understanding of the sample's behavior. 
+Since the assembly depends on the machine code, there is an assembly language, with its assembler and disassembler, for each processor's architecture.
 
 \subsection{Control Flow Graph}
 
-The Control Flow Graph is a representation, in graph format, of the execution flow of a program or application. Frances E. Allen proposed it in \cite{allen1970control}.
+The \textit{Control Flow Graph} is a representation, in graph format, of the execution flow of a program or application. Frances E. Allen proposed it in \cite{allen1970control}.
 
 The Control Flow Graph (\textbf{CFG}) is a directed graph, and it is process-oriented. Each node represents a basic block, a sequence of instructions that are executed consecutively without any jump. The edges of the graph represent the path of the execution. The graph represents all the possible paths that the program can take.
 
@@ -162,7 +157,7 @@ The main features of IDA PRO \cite{ida} are the debugger that lets the analyst d
 
 Another famous framework for RE is \textbf{radare2} \cite{radare2}. It is free and offers a decompiler and a disassembler.  It is compatible with tons of processors, and executable types. It comes with a set of command-line utilities that can be used individually or together, but it also has a graphic interface to navigate the code and the possibility of running scripts. However, it is not user-friendly as other tools .
 
-\textbf{Ghidra} \cite{ghidra} is a novel open-source reverse engineering framework developed by the National Security Agency (NSA). It facilitates the analysis of malicious code and malware like viruses and can give cybersecurity professionalists a better understanding of potential vulnerabilities in their networks and systems. It is a direct competitor of IDA PRO because it offers almost all the features that IDA PRO has, but Ghidra is entirely free. It is possible to run a headless version of Ghidra, and control it by remote. We installed it on a virtual machine on a server and use it to run headless scripts on the executables to extract information about the binaries.
+\textbf{Ghidra} \cite{ghidra} is a novel open-source reverse engineering framework developed by the National Security Agency (\textbf{NSA}). It facilitates the analysis of malicious code and malware like viruses and can give cybersecurity professionalists a better understanding of potential vulnerabilities in their networks and systems. It is a direct competitor of IDA PRO because it offers almost all the features that IDA PRO has, but Ghidra is entirely free. It is possible to run a headless version of Ghidra, and control it by remote. We installed it on a virtual machine on a server and use it to run headless scripts on the executables to extract information about the binaries.
 
 We chose to run our tests on \textbf{Ghidra} for different reasons. First of all, it is entirely free and open-source.
 Secondly, it has an headless version of the framework. The possibility of a headless version was perfect for our needs because we can let it run on a server, always powered on, without bothering about resource consumption. 
@@ -182,7 +177,7 @@ This section covers the Ghidra's features regarding the disassembled code, decom
 
 \subsection{Disassembled code}
 
-The extraction of disassembled code is an easy and fast task. The documentation provides all the information on how to correctly use the disassembler. 
+The extraction of disassembled code is an easy and fast task. Ghidra's documentation provides all the information on how to correctly use the disassembler. 
 
 Ghidra does not have a functionality to extract all the disassembled code, like in the GUI. But it is possible, for each function, to iterate the instructions in a given address space range. The instruction object has a \texttt{toString()} method that returns the disassembled line, that we use to create the features needed.
 

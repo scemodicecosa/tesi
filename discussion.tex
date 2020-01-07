@@ -7,7 +7,7 @@ This chapter shows the results obtained during the evaluation tests. We show the
 
 To evaluate the performance of a model, we analyze its metrics such as \textit{accuracy, precision, recall, and f1-score}. To explain them, let consider a classifier that should say if a sample belongs to a given class or not. We can introduce the following terms
 
-The \textit{confusion matrix} (CM) is a summary of prediction results, divided by class. The rows represent the instances of actual value per class, the columns represent the instances of predicted value per class. In Table \ref{tab:cm} we present an example of confusion matrix. The first row represents the instances where the actual class is "yes", in particular its intersection with the first column represents the number of samples that are correctly predicted as "yes" (value 5 in the CM). The intersection with the second
+The \textit{confusion matrix} (CM) is a summary of prediction results, divided by class. The rows represent the instances of actual value per class, the columns represent the instances of predicted value per class. Table \ref{tab:cm} presents an example of confusion matrix. The first row represents the instances where the actual class is "yes", in particular its intersection with the first column represents the number of samples that are correctly predicted as "yes" (value 5 in the CM). The intersection with the second
 column indicates the number samples that belong to the \textit{yes} but that the classifier predicted as \textit{no} (value 2 in the CM). The second row contains the samples that has a \textit{no} class. The intersection with the first column indicates the number of samples predicted as \textit{yes} while they are a \textit{no} (value 1 in the CM) , and the intersection with the second columns represents the number of \textit{no} samples predicted correctly (value 4 in the CM).
 \begin{table}[h]
 	\centering
@@ -22,6 +22,7 @@ column indicates the number samples that belong to the \textit{yes} but that the
 	\end{tabular}
 \end{table}
 
+From \textit{confusion matrix} we can calculate the following values:
 \begin{itemize}
 	\item \textbf{True Positive (TP)}: These are the observation that are positive and correct, when the real answer is \textit{yes} and the predicted answer is also \textit{yes} (5);
 	\item \textbf{True Negative (TN)}: These are the observations that are negative and correct, when the real answer is \textit{no} and the predicted answer is also \textit{no} (4);
@@ -41,7 +42,7 @@ We can use those four parameters to calculate the metrics:
 Those metrics indicate the performances of a model classifier. Since we are developing a malware prioritization framework, we are interested in Precision because we do not want false positives to increase the workload of the analysts. 
 
 
-\section{Testing flow?}
+\section{Testing flow}
 \label{sec:flow}
 
 We have executed different tests using different classificators and hyperparameters. 
@@ -57,16 +58,23 @@ For \texttt{RandomForest} and \texttt{XGBoost} models, we found that 150 trees a
 In Section \ref{sec:feat_sel}, we presented different methods for feature selection. In this section, we analyze and compare them to find the best subset of features to represent APT malware.
 
 \subsection{Scaling dataset}
-The first step for selecting features is to scale the dataset. It is essential because, in our case, we have features with very different scales and some outliers. These two aspects can decrease the predictive performance of the classification model. We chose the \texttt{MaxAbsScaler} from \textit{scikit-learn} because it fits our needs. The scaler does not shift or center the data, and it does not destroy the sparsity of the features. For each feature, the algorithm calculates the maximum value and scales all the features in the column, such that the maximum value is equal to 1.0. All the features will be in the range of 0 and 1.0, but they maintain their variance.
+The first step for selecting features is to scale the dataset. It is essential because, in our case, we have features with very different scales and some outliers. These two aspects can decrease the predictive performance of the classification model. We chose the \texttt{MaxAbsScaler} from \textit{scikit-learn} because it fits our needs. The scaler does not shift or center the data, and it does not destroy the sparsity of the features. For each feature, the algorithm calculates the maximum value and scales all the features in the column, such that the maximum value is equal to 1.0. All the features will be in the range of 0 - 1.0, and their variance will be scaled to the range 0 - 0.1 too.
 
 \subsection{Remove low variance}
 The second step is to visualize the variance of the dataset. We calculated with the \textit{NumPy} \texttt{std} function on axis 0, and we visualize feature variances with \textit{matplotlib}. Figure \ref{fig:var_all} shows the variance of the entire dataset. As we can see, some features have zero variance, and this means that they are constant over all the samples. Thus they are not useful for classification.
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.6\columnwidth]{variance-all.png}
-	\caption{Variance of features in the entire dataset}
+	\includegraphics[width=0.6\columnwidth]{variance-all2.png}
+	\caption{Variance of features in the entire dataset.}
 	\label{fig:var_all}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\columnwidth]{variance-distr.png}
+	\caption{Distribution of variance in the entire dataset.}
+	\label{fig:var_distr}
 \end{figure}
 
 To remove them, we use \texttt{VarianceThreshold} class that removes all low-variance features. We set a threshold, and if a feature variance is below the threshold, then it is removed. By default, the class removes all zero-variance features and has removed \textbf{32} features from our dataset.
@@ -83,19 +91,19 @@ We select respectivly the 25\%, 15\%, and 10\% with the \texttt{chi2, fclassif, 
 
 \begin{figure}[]
 	\centering
-	\begin{subfigure}[t]{0.48\textwidth}
+	\begin{subfigure}[t]{0.8\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{univariance25.png}
+		\includegraphics[width=\linewidth]{rank25.png}
 		\caption{Ranking functions score with 25\%.}\label{fig:ranking25}		
 	\end{subfigure}
-	\begin{subfigure}[t]{0.48\textwidth}
+	\begin{subfigure}[t]{.8\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{univariance15.png}
+		\includegraphics[width=\linewidth]{rank15.png}
 		\caption{Ranking functions score with 15\%.}\label{fig:ranking15}
 	\end{subfigure}\\
-	\begin{subfigure}[t]{0.48\textwidth}
+	\begin{subfigure}[t]{.8\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{univariance10.png}
+		\includegraphics[width=\linewidth]{rank10.png}
 		\caption{Ranking functions score with 10\%.}\label{fig:ranking10}
 	\end{subfigure}
 	\caption{Comparison of metrics score for different ranking functions with different selected percentages.}\label{fig:ranking}
@@ -194,7 +202,7 @@ The \texttt{SelectFromModel} algorithm chooses 12781 features in just 18s. Even 
 
 We run various tests with different numbers of \texttt{max	features} to compare the results. The tests are shown in Figure \ref{fig:model}. Figure \ref{fig:model-time} shows how time varies related to the number of features selected.
 
-As we can see from Figure \ref{fig:model-metrics} there is no big difference in the tests made between \textit{accuracy, precision,recall, or f1-score}. For example, the maximum difference in accuracy is just 0.0016. This happens because \texttt{RandomForestClassifier} already performs feature selection using \texttt{feature\_importances} during the training phase. Since the time is dependent on the number of features, we choose to balance the performances and the execution time selecting the best 3000 features.
+As we can see from Figure \ref{fig:model-metrics} there is no big difference in the tests made between \textit{accuracy, precision,recall, or f1-score}. For example, the maximum difference in accuracy is just 0.0016. This happens because \texttt{RandomForestClassifier} already performs feature selection using \texttt{feature\_importances} during the training phase. 
 
 \subsection{Wrapped methods}
 
@@ -284,7 +292,7 @@ Table \ref{tab:per-class} shows a detailed representation of Precision, Recall, 
 		\midrule
 		RF with FS & 5.22s   & 95.21\%  & 95.24\%   & 95.21\% & 95.20\%  \\
 		XGB with FS      & 53.14s & 94.76\%  & 94.78\%   & 94.76\% & 94.74\%  \\
-		RF with full dataset   &  366.65s  & 94.98\% &       95.03\%    &   94.98\%      & 94.97\%\\
+		RF with all features   &  366.65s  & 94.98\% &       95.03\%    &   94.98\%      & 94.97\%\\
 		\bottomrule         
 	\end{tabular}
 \end{table}

@@ -4,7 +4,15 @@ This chapter presents the classification models used in our task, the validation
 \section{Random Forest}
 Random forest \cite{ho1995random} is an ensemble learning method for classification, regression, and other tasks that operates by constructing multiple decision trees at training time and outputting the class that is the mode of the classes (classification) or mean prediction (regression) of the individual trees. 
 \subsection{Decision tree}
-A decision tree \cite{kaminski2018framework} is a method used in different machine learning tasks. It uses a tree-like model of decisions and their possible consequences, including chance event outcomes, resource costs, and utility. It is one way to display an algorithm that only contains conditional control statements. 
+A decision tree \cite{kaminski2018framework} is a method used in different machine learning tasks. It is a tree-like graph to display decisions and their possible consequences, including chance event outcomes, resource costs, and utility. It is one way to display an algorithm that only contains conditional control statements. Figure \ref{fig:dec-tree} depicts an example of decision tree for the deciding whether to play or not tennis.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{decision-tree.png}
+	\caption{Decision tree for playing tennis.}
+	\label{fig:dec-tree}
+\end{figure}
+
 
 Graph's nodes represent a test on a different feature, every branch represents the outcome of the previous test, and each leaf represents the decision after analyzing all the features, i.e., the class label. 
 
@@ -215,10 +223,7 @@ In \textit{forward selection}, the algorithm starts from an empty set, and at ea
 
 \subsection{Embedded methods}
 
-Embedded methods are a combination of the other two. They perform feature selection during the training process \cite{guyon2003introduction}. Figure \ref{fig:embedded} shows the flow of embedded methods. This technique allows the algorithms to be more efficient than wrapper methods. First of all, they do not need to split the dataset into training and testing sets. Secondly, they are faster because they do avoid to retrain the model for every subset of features.
-The most common methods are \textit{Lasso} and \textit{Ridge regression} and \textit{decision tree}.
-
-\textit{Lasso} and \textit{Ridge regression} penalize the beta coefficient by a factor, to avoid that the model focuses on a particular set of features.
+Embedded methods are a combination of the other two. They perform feature selection during the training process \cite{guyon2003introduction}. Figure \ref{fig:embedded} shows the flow of embedded methods. This technique allows the algorithms to be more efficient than wrapper methods. First of all, they do not need to split the dataset into training and testing sets. Secondly, they are faster because they do avoid to retrain the model for every subset of features. One of the most used is \textit{Decision tree}.
 
 \textit{Decision tree }algorithms select a feature at each recursive step, during the tree growing process, dividing the samples into smaller subsets. The more child node a tree has of the same class, the more important are the features.
 
